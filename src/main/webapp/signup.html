@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<!--<%@ page contentType="text/html;charset=UTF-8" language="java" %>-->
 <head>
     <title>Create an account</title>
 </head>
@@ -10,7 +10,7 @@
 
 <img src="images\BuyMe.png" width="150" height="150" class="logo">
 
-<form action="/signup_action.php">
+<form action="/signup_action.jsp" method="post">
 
     <input type="text" id="username" name="username" placeholder="Username" class="inputForm"><br><br>
     <input type="password" id="password" name="password" placeholder="Password" class="inputForm"><br><br>
@@ -29,7 +29,7 @@
 
 </form>
 
-<p><a href="index.jsp" class="endingLink">Have an account? Log in!</a></p>
+<p><a href="index.html" class="endingLink">Have an account? Log in!</a></p>
 
 </body>
 </html>
