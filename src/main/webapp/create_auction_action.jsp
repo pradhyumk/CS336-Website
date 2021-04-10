@@ -4,6 +4,7 @@
     String itemDescription = request.getParameter("itemDescription");
     String startPrice = request.getParameter("startPrice");
     String upperLimit = request.getParameter("upperLimit");
+    String minPrice = request.getParameter("minPrice");
     String startDate = request.getParameter("startDate");
     String closingDate = request.getParameter("closingDate");
     String bidIncrement = request.getParameter("bidIncrement");
@@ -32,7 +33,6 @@
         String usern = (String)session.getAttribute("user");
         String queryAccountID = "select accountID from buyeraccount where username = '" + usern + "';";
 
-        System.out.println(queryAccountID);
         ResultSet ret = statement.executeQuery(queryAccountID);
         ret.next();
 
@@ -42,14 +42,13 @@
         ResultSet ret1 = statement.executeQuery(getAIValue);
         ret1.next();
         int AIValue = Integer.parseInt(ret1.getString(1));
-        System.out.println("next AI: " + AIValue);
 
-        String insertItem = "insert into item (itemName, itemDescription, auctionID) values ('" + itemName + "', '" + itemDescription + "', " + AIValue + ")";
-        String insertAuction = "insert into auction (startPrice, upperLimit, startDate, closingDateTime, bidIncrement, accountID, itemID) values (" + startPrice + ", " + upperLimit + ", '" + startDate + "', '" + closingDate + "', " + bidIncrement + ", " + accountID + ", " + AIValue + ")";
+//        String insertItem = "insert into item (itemName, itemDescription, auctionID) values ('" + itemName + "', '" + itemDescription + "', " + AIValue + ")";
+//        String insertAuction = "insert into auction (startPrice, upperLimit, startDate, closingDateTime, bidIncrement, accountID, itemID) values (" + startPrice + ", " + upperLimit + ", '" + startDate + "', '" + closingDate + "', " + bidIncrement + ", " + accountID + ", " + AIValue + ")";
 
 
-//        String insertItem = "insert into item (itemName, itemDescription) values ('" + itemName + "', '" + itemDescription + "')";
-//        String insertAuction = "insert into auction (startPrice, upperLimit, startDate, closingDateTime, bidIncrement, accountID) values ('" + startPrice + "', '" + upperLimit + "', '" + startDate + "', '" + closingDate + "', '" + bidIncrement + "', '" + accountID + "')";
+        String insertItem = "insert into item (itemName, itemDescription) values ('" + itemName + "', '" + itemDescription + "')";
+        String insertAuction = "insert into auction (startPrice, upperLimit, startDate, closingDateTime, bidIncrement, accountID, minPrice) values ('" + startPrice + "', '" + upperLimit + "', '" + startDate + "', '" + closingDate + "', '" + bidIncrement + "', '" + accountID + "', '" + minPrice + "')";
 
         statement.executeUpdate(insertItem);
         statement.executeUpdate(insertAuction);
