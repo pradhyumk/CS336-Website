@@ -161,3 +161,10 @@ p {
     background-color: #46BAD1;
     color: white;
 }
+
+/* Style the form - display items horizontally */
+.form-inline {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+}

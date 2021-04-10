@@ -25,7 +25,12 @@
 <p align="center">Welcome <%=session.getAttribute("user")%> - <a href='logout.jsp'>Log out</a></p>
 
 <form action="/create_auction.jsp" class="buttonForm">
-    <input type="submit" value="Create Auction" class="createAuctionButton"/>
+    <input type="submit" value="+ Create Auction" class="createAuctionButton"/>
+</form>
+
+<form class="form-inline" action="/item_view_bid.jsp">
+    <input type="text" id="itemID" name="itemID" placeholder="View Item (Enter Auction ID)" class="inputForm">
+    <input type="submit" value="View Item" class="submitButton">
 </form>
 
 <%
@@ -35,13 +40,14 @@
         Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/buyme", "root", "password@123");
         Statement statement = con.createStatement();
 
-        String getAuctions = "select itemName, itemDescription, currentPrice, startDate, closingDateTime from auction, item where auctionID = itemID;";
+        String getAuctions = "select auctionID, itemName, itemDescription, currentPrice, startDate, closingDateTime from auction, item where auctionID = itemID;";
         ResultSet ret = statement.executeQuery(getAuctions);
 
 
 %>
     <table id="auctiondata">
         <tr>
+            <th>Auction ID</th>
             <th>Item Name</th>
             <th>Item Description</th>
             <th>Current Price</th>
@@ -49,8 +55,9 @@
             <th>End Date</th>
         </tr>
 
-<%  while (ret.next()) { System.out.println(ret.getString("itemName"));%>
+<%  while (ret.next()) {;%>
         <tr>
+            <td><%=ret.getString("auctionID") %></td>
             <td><%=ret.getString("itemName") %></td>
             <td><%=ret.getString("itemDescription") %></td>
             <td><%=ret.getFloat("currentPrice") %></td>
