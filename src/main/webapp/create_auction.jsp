@@ -7,11 +7,13 @@
 <link rel="stylesheet" href="styles.css">
 <body>
 
+<p class="heading" align="center">Create Auction</p>
+
 <form action="/dashboard.jsp" class="buttonForm">
     <input type="submit" value="Go Back" class="backButton"/>
 </form>
 
-<p class="heading">Create Auction</p>
+
 
 <form class="auctionForm" action="/create_auction_action.jsp" method="post">
 

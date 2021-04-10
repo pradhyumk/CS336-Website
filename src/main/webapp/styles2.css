@@ -1,9 +1,35 @@
 h1 {
-    margin-top: 250px;
+    margin-top: 25px;
     text-align: center;
     font-weight: bold;
     font-family: Arial;
 
+}
+#auctiondata {
+    font-family: Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+#auctiondata td, #auctiondata th {
+    padding: 8px;
+}
+
+#auctiondata tr {
+    border-bottom: 1px solid #46BAD1;
+    text-align: left;
+}
+
+#auctiondata tr:nth-child(even){background-color: #f2f2f2;}
+
+#auctiondata tr:hover {background-color: #c1bdbd;}
+
+#auctiondata th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: #46BAD1;
+    color: white;
 }
 
 .buttonForm {
@@ -112,6 +138,26 @@ p {
 }
 
 .backButton:hover {
+    background-color: #46BAD1;
+    color: white;
+}
+
+.createAuctionButton {
+    border-radius: 4px;
+    border: none;
+    padding: 16px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 13pt 2pt;
+    transition-duration: 0.4s;
+    cursor: pointer;
+    background-color: #021e4a;
+    color: white;
+}
+
+.createAuctionButton:hover {
     background-color: #46BAD1;
     color: white;
 }

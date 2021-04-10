@@ -1,4 +1,5 @@
 <%@ page import="java.sql.*"%>
+
 <%
     String itemName = request.getParameter("itemName");
     String itemDescription = request.getParameter("itemDescription");

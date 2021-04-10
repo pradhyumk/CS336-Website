@@ -16,7 +16,7 @@
 
         if (ret.getInt(1) == 1){ // Normal user
             session.setAttribute("user", username);
-            response.sendRedirect("login_success.jsp");
+            response.sendRedirect("dashboard.jsp");
         } else if (ret.getInt(1) == 0) {
             String query1 = "select exists(select * from adminaccount sa where sa.username = \"" + username + "\" AND sa.userPassword = \"" + password + "\");";
             ResultSet ret1 = statement.executeQuery(query1);
