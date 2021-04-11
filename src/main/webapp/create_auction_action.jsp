@@ -48,8 +48,10 @@
 //        String insertAuction = "insert into auction (startPrice, upperLimit, startDate, closingDateTime, bidIncrement, accountID, itemID) values (" + startPrice + ", " + upperLimit + ", '" + startDate + "', '" + closingDate + "', " + bidIncrement + ", " + accountID + ", " + AIValue + ")";
 
 
-        String insertItem = "insert into item (itemName, itemDescription) values ('" + itemName + "', '" + itemDescription + "')";
         String insertAuction = "insert into auction (startPrice, upperLimit, startDate, closingDateTime, bidIncrement, accountID, minPrice) values ('" + startPrice + "', '" + upperLimit + "', '" + startDate + "', '" + closingDate + "', '" + bidIncrement + "', '" + accountID + "', '" + minPrice + "')";
+        System.out.println(insertAuction);
+        String insertItem = "insert into item (itemName, itemDescription) values ('" + itemName + "', '" + itemDescription + "')";
+        System.out.println(insertItem);
 
         statement.executeUpdate(insertItem);
         statement.executeUpdate(insertAuction);
@@ -60,5 +62,3 @@
     }
 
 %>
-
-// java.sql.SQLException: Field 'itemID' doesn't have a default value

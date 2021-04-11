@@ -34,7 +34,7 @@ h1 {
 
 .buttonForm {
     float: left;
-    display: block;
+    display: inline-block;
 }
 
 .heading {

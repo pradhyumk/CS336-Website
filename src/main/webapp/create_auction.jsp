@@ -1,5 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
+<% if (session.getAttribute("user") == null){ %>
+    <script type="text/javascript">
+        if (confirm("You are currently not logged in, confirm to proceed to the login page!")){
+            window.location.replace("index.html");
+        }
+    </script>
+<% return; } %>
+
 <head>
     <meta charset="UTF-8">
     <title>BuyMe Create Auction</title>
@@ -22,10 +31,10 @@
     <input type="number" id="startPrice" name="startPrice" placeholder="Start Price" class="inputForm" min="1"><br><br>
     <input type="number" id="upperLimit" name="upperLimit" placeholder="Upper Limit" class="inputForm"><br><br>
     <input type="number" id="minPrice" name="minPrice" placeholder="Minimum Price" class="inputForm"><br><br>
-    <h4>Start Date</h4>
+    <h4>Start Date (format: mm/dd/yyyy, hh:mm a)</h4>
     <input type="datetime-local" id="startDate" name="startDate" placeholder="Start Date" class="inputForm"><br><br>
-    <h4>Closing Date</h4>
-    <input type="datetime-local" id="closingDate" name="closingDate" placeholder="closingDate" class="inputForm"><br><br>
+    <h4>Closing Date (format: mm/dd/yyyy, hh:mm a)</h4>
+    <input type="datetime-local" id="closingDate" name="closingDate" placeholder="Closing Date" class="inputForm"><br><br>
     <input type="number" id="bidIncrement" name="bidIncrement" placeholder="Bid Increment" class="inputForm"><br><br>
     <input type="submit" value="Create Auction" class="submitButton">
 

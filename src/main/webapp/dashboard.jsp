@@ -23,12 +23,13 @@
 
 <h1>BuyMe Dashboard</h1>
 <p align="center">Welcome <%=session.getAttribute("user")%> - <a href='logout.jsp'>Log out</a></p>
+<br><br><br>
 
 <form action="/create_auction.jsp" class="buttonForm">
     <input type="submit" value="+ Create Auction" class="createAuctionButton"/>
 </form>
 
-<form class="form-inline" action="/item_view_bid.jsp">
+<form action="/item_view_bid.jsp" class="buttonForm">
     <input type="text" id="itemID" name="itemID" placeholder="View Item (Enter Auction ID)" class="inputForm">
     <input type="submit" value="View Item" class="submitButton">
 </form>
@@ -61,8 +62,8 @@
             <td><%=ret.getString("itemName") %></td>
             <td><%=ret.getString("itemDescription") %></td>
             <td><%=ret.getFloat("currentPrice") %></td>
-            <td><%=ret.getDate("startDate") %></td>
-            <td><%=ret.getDate("closingDateTime") %></td>
+            <td><%=ret.getTimestamp("startDate") %></td>
+            <td><%=ret.getTimestamp("closingDateTime") %></td>
         </tr>
         <%}%>
     </table>
