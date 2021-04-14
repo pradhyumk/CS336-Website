@@ -1,5 +1,7 @@
 <%@ page import="java.sql.*"%>
+<%@ page import="java.util.logging.Logger" %>
 <%
+    Logger logger = Logger.getLogger("signup_action.jsp");
     String username = request.getParameter("username");
     String password = request.getParameter("password");
     String phone = request.getParameter("phone");
@@ -42,7 +44,7 @@
         }
 
     } catch (Exception e){
-        System.out.println(e);
+        logger.warning(e.getMessage());
     }
 
 %>

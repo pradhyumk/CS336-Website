@@ -38,7 +38,7 @@
         Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/buyme", "root", "password@123");
         Statement statement = con.createStatement();
 
-        String usern = (String)session.getAttribute("user");
+        String usern = (String) session.getAttribute("user");
         String queryAccountID = "select accountID from buyeraccount where username = '" + usern + "';";
 
         ResultSet ret = statement.executeQuery(queryAccountID);
@@ -51,23 +51,24 @@
         String buyerMaximum = request.getParameter("buyerMaximum");
 
         String getMaxBid = "select currentPrice from auction where auctionID = " + aID + ";";
-        System.out.println(getMaxBid);
         ResultSet mbRet = statement.executeQuery(getMaxBid);
 
         mbRet.next();
         float curBid = Float.parseFloat(bidAmount);
-        System.out.println("current Bid: " + curBid);
+
 
         float maxBid = Float.parseFloat(mbRet.getString(1));
         logger.info("mbet: " + mbRet.getString(1));
-        System.out.println("max Bid: " + maxBid);
+
+        String getBidInc = "select bidIncrement from auction where auctionID = " + aID + ";";
+        System.out.println("get bid inc: " + getBidInc);
+        ResultSet bdRet = statement.executeQuery(getBidInc);
+
+        bdRet.next();
+        float bidInc = Float.parseFloat(bdRet.getString(1));
 
 
-        if (maxBid < curBid) {
-            System.out.println("BidAmount: " + bidAmount);
-            System.out.println("buyerMaximum: " + buyerMaximum);
-
-
+        if (maxBid < curBid && (curBid % bidInc == 0)) {
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String currentTime = format.format(new Date());
 
@@ -75,7 +76,6 @@
                     ", " + buyerMaximum + ", " + aID + ", " + accountID + ");";
 
             logger.info("auctionID: " + aID);
-            System.out.println("Statement: " + insertBid);
 
             statement.executeUpdate(insertBid);
 
@@ -83,11 +83,23 @@
 
             String updateCurrentPrice = "update auction set currentPrice = " + bidAmount + " where auctionID = " + aID + ";";
             statement.executeUpdate(updateCurrentPrice);
-            System.out.println("Update Bid: " + updateCurrentPrice);
 
             response.sendRedirect("/dashboard.jsp");
 
-        } else {
+
+        } else if (curBid % bidInc != 0 && maxBid >= curBid) {
+
+%>
+
+            <script type="javascript">
+                alert("Your bid does not follow the bid increment.");
+                window.location.replace("/dashboard.jsp");
+            </script>
+
+
+<%
+
+        }  else {
 
 %>
 

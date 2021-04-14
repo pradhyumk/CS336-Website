@@ -1,6 +1,8 @@
 <%@ page import="java.sql.*"%>
+<%@ page import="java.util.logging.Logger" %>
 
 <%
+    Logger logger = Logger.getLogger("create_auction_action.jsp");
     String itemName = request.getParameter("itemName");
     String itemDescription = request.getParameter("itemDescription");
     String startPrice = request.getParameter("startPrice");
@@ -48,17 +50,14 @@
 //        String insertAuction = "insert into auction (startPrice, upperLimit, startDate, closingDateTime, bidIncrement, accountID, itemID) values (" + startPrice + ", " + upperLimit + ", '" + startDate + "', '" + closingDate + "', " + bidIncrement + ", " + accountID + ", " + AIValue + ")";
 
 
-        String insertAuction = "insert into auction (startPrice, upperLimit, startDate, closingDateTime, bidIncrement, accountID, minPrice) values ('" + startPrice + "', '" + upperLimit + "', '" + startDate + "', '" + closingDate + "', '" + bidIncrement + "', '" + accountID + "', '" + minPrice + "')";
-        System.out.println(insertAuction);
+        String insertAuction = "insert into auction (startPrice, upperLimit, startDate, closingDateTime, bidIncrement, accountID, minPrice, currentPrice) values ('" + startPrice + "', '" + upperLimit + "', '" + startDate + "', '" + closingDate + "', '" + bidIncrement + "', '" + accountID + "', '" + minPrice + "', '" + startPrice + "')";
         String insertItem = "insert into item (itemName, itemDescription) values ('" + itemName + "', '" + itemDescription + "')";
-        System.out.println(insertItem);
-
         statement.executeUpdate(insertItem);
         statement.executeUpdate(insertAuction);
         response.sendRedirect("dashboard.jsp");
 
     } catch (Exception e){
-        System.out.println(e);
+        logger.warning(e.getMessage());
     }
 
 %>
