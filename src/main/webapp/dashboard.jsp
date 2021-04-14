@@ -1,4 +1,6 @@
 <%@ page import="java.sql.*"%>
+<%@ page import="java.util.Date" %>
+<%@ page import="java.text.SimpleDateFormat" %>
 
 <!DOCTYPE html>
 
@@ -54,9 +56,24 @@
             <th>Current Price</th>
             <th>Start Date</th>
             <th>End Date</th>
+            <th>Status</th>
         </tr>
 
-<%  while (ret.next()) {;%>
+<%  while (ret.next()) {
+
+        // compare current time to closing date time
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = new Date();
+        long currentTime = date.getTime(); // 1687957345 <-- how many miliseconds from Jan 1 1970
+        System.out.println("epoch: " + currentTime);
+
+        Timestamp closingTime = ret.getTimestamp("closingDateTime");
+        System.out.println(closingTime);
+        String st = "Open";
+
+
+%>
+
         <tr>
             <td><%=ret.getString("auctionID") %></td>
             <td><%=ret.getString("itemName") %></td>
@@ -64,6 +81,7 @@
             <td><%=ret.getFloat("currentPrice") %></td>
             <td><%=ret.getTimestamp("startDate") %></td>
             <td><%=ret.getTimestamp("closingDateTime") %></td>
+            <td><%=st%></td>
         </tr>
         <%}%>
     </table>

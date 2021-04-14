@@ -2,6 +2,7 @@
 <%@ page import="java.util.Date.*"%>
 <%@ page import="java.util.Date" %>
 <%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="java.util.logging.Logger" %>
 
 <!DOCTYPE html>
 
@@ -16,7 +17,9 @@
 <link rel="stylesheet" href="styles2.css">
 
 
-<% if (session.getAttribute("user") == null){ %>
+<%  Logger logger = Logger.getLogger("item_view_bid.jsp");
+
+    if (session.getAttribute("user") == null){ %>
 <script type="text/javascript">
     if (confirm("You are currently not logged in, confirm to proceed to the login page!")){
         window.location.replace("index.html");
@@ -35,7 +38,6 @@
 
     String item_ID = request.getParameter("itemID");
     System.out.println("auctionID222: " + item_ID);
-
 
     try {
         Class.forName("com.mysql.jdbc.Driver");
@@ -77,7 +79,7 @@
 
 <br><br><br>
 
-        <form class="auctionForm" action="item_view_bid.jsp" method="post">
+        <form class="auctionForm" action="insert_bid.jsp" method="post">
             <input type="number" id="auctionID" name="auctionID" min=1 step="any" placeholder="Auction ID" class="inputForm"><br><br>
             <input type="number" id="bidmount" name="bidAmount" min=1 step="any" placeholder="Bid Amount" class="inputForm"><br><br>
             <input type="number" id="byerMaximum" name="buyerMaximum" min=1 step="any" placeholder="Maximum Bid" class="inputForm"><br><br>
@@ -86,40 +88,9 @@
 
 <br><br><br>
 <%
-        String aID = request.getParameter("auctionID");
-        String bidAmount = request.getParameter("bidAmount");
-        String buyerMaximum = request.getParameter("buyerMaximum");
-
-        if (bidAmount != null && buyerMaximum != null) {
-            System.out.println("BidAmount: " + bidAmount);
-            System.out.println("buyerMaximum: " + buyerMaximum);
-
-
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            String currentTime = format.format(new Date());
-
-
-            // String currentTime = (new java.util.Date()).toString();
-
-            String insertBid = "insert into bid (bidDateTime, bidAmount, buyerMaximum, auctionID, accountID) values ('" + currentTime + "', " + bidAmount  +
-                        ", " + buyerMaximum + ", " + aID + ", " + accountID + ");";
-
-            System.out.println("auctionID: " + aID);
-            System.out.println("Statement: " + insertBid);
-
-            statement.executeUpdate(insertBid);
-
-            response.sendRedirect("/dashboard.jsp");
-        }
 
         String getBids = "select bidDateTime, bidAmount, username from bid join buyeraccount on bid.accountID = buyeraccount.accountID where auctionID = " + item_ID + ";";
-
         ResultSet retBid = statement.executeQuery(getBids);
-
-        // update the currentPrice in the auction
-
-        String getMaxBid = "select max(bidAmount) from bid where auctionID = " + aID + ";";
-        statement.executeUpdate(getMaxBid);
 
 %>
 
@@ -141,7 +112,7 @@
 
 <%
     } catch (Exception e){
-        System.out.println(e);
+        logger.warning(e.getMessage());
     }
 %>
 
