@@ -67,46 +67,68 @@
         bdRet.next();
         float bidInc = Float.parseFloat(bdRet.getString(1));
 
-
-        if (maxBid < curBid && (curBid % bidInc == 0)) {
+        float buyMax = Float.parseFloat(buyerMaximum);
+        //35 and 45
+        if (maxBid < curBid && ((curBid - maxBid) % bidInc == 0) && ((buyMax - maxBid) % bidInc == 0) && buyMax > curBid) { // if current bid is greater than the max bid and it folllows the increment and the maxbod also follows the increament
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String currentTime = format.format(new Date());
 
             String insertBid = "insert into bid (bidDateTime, bidAmount, buyerMaximum, auctionID, accountID) values ('" + currentTime + "', " + bidAmount +
                     ", " + buyerMaximum + ", " + aID + ", " + accountID + ");";
 
-            logger.info("auctionID: " + aID);
+            System.out.println("insetring bid: " + insertBid);
 
             statement.executeUpdate(insertBid);
-
-            logger.info("update is the error");
 
             String updateCurrentPrice = "update auction set currentPrice = " + bidAmount + " where auctionID = " + aID + ";";
             statement.executeUpdate(updateCurrentPrice);
 
+            // add alerts for others users
+
+            String getAlertAccounts = "select distinct accountID from bid where auctionID = " + aID + " and accountID != " + accountID + ";";
+//            System.out.println(getAlertAccounts);
+            ResultSet retAU = statement.executeQuery(getAlertAccounts);
+
+            while (retAU.next()) {
+                String curID = retAU.getString("accountID");
+                String notText = "The bid you have placed on this item has been out-bid.";
+
+                String alertPerson = "insert into notifications (accountID, auctionID, notificationText, notificationTime) values (" + curID + ", " + aID + ", '" + notText + "', '" + currentTime + "');";
+
+                System.out.println("Alert Query: " + alertPerson);
+                statement.executeUpdate(alertPerson);
+            }
+
             response.sendRedirect("/dashboard.jsp");
 
-
-        } else if (curBid % bidInc != 0 && maxBid >= curBid) {
+        }  else if ((curBid - maxBid) % bidInc != 0 && (curBid > maxBid)) { // if bid increament is not followed
+%>
+            <script type="text/javascript">
+                console.log("Entered here");
+                alert("Your bid does not follow the bid increment.");
+                window.location.replace("dashboard.jsp");
+            </script>
+<%
+        }  else if (curBid < buyMax) {
 
 %>
 
-            <script type="javascript">
-                alert("Your bid does not follow the bid increment.");
-                window.location.replace("/dashboard.jsp");
-            </script>
+        <script type="text/javascript">
+            alert("Your buyer maximum needs to be greater than your placed bid.");
+            window.location.replace("dashboard.jsp");
+        </script>
 
 
 <%
+        }
 
-        }  else {
 
+        else {
 %>
-
-            <script type="javascript">
-                const mb = <%=maxBid%>;
+            <script type="text/javascript">
+                const mb = "<%=String.format("%.2f", maxBid)%>";
                 alert("Your bid is less than the current max bid of $" + mb + "! Please enter a higher bid.");
-                window.location.replace("/dashboard.jsp");
+                window.location.replace("dashboard.jsp");
             </script>
 
     <%

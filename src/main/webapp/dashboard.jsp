@@ -37,6 +37,10 @@
     <input type="submit" value="View Item" class="submitButton">
 </form>
 
+<form action="notifications_page.jsp" class="buttonForm">
+    <input type="submit" value="View Notifications" class="submitButton">
+</form>
+
 <%
 
     try {
@@ -73,7 +77,7 @@
             <td><%=ret.getString("auctionID") %></td>
             <td><%=ret.getString("itemName") %></td>
             <td><%=ret.getString("itemDescription") %></td>
-            <td><%=String.format("%.2f", ret.getFloat("currentPrice"))%></td>
+            <td><%="$" + String.format("%.2f", ret.getFloat("currentPrice"))%></td>
             <td><%=ret.getTimestamp("startDate") %></td>
             <td><%=ret.getTimestamp("closingDateTime") %></td>
             <td><%=st%></td>
