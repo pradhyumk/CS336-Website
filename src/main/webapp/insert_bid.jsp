@@ -42,7 +42,7 @@
         String queryAccountID = "select accountID from buyeraccount where username = '" + usern + "';";
 
         ResultSet ret = statement.executeQuery(queryAccountID);
-        ret.next();
+//        ret.next();
 
         String accountID = ret.getString(1);
 
@@ -69,7 +69,7 @@
 
         float buyMax = Float.parseFloat(buyerMaximum);
         //35 and 45
-        if (maxBid < curBid && ((curBid - maxBid) % bidInc == 0) && ((buyMax - maxBid) % bidInc == 0) && buyMax > curBid) { // if current bid is greater than the max bid and it folllows the increment and the maxbod also follows the increament
+        if (maxBid < curBid && ((curBid - maxBid) % bidInc == 0) && ((buyMax - maxBid) % bidInc == 0) && buyMax >= curBid) { // if current bid is greater than the max bid and it folllows the increment and the maxbod also follows the increament
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String currentTime = format.format(new Date());
 
@@ -86,7 +86,7 @@
             // add alerts for others users
 
             String getAlertAccounts = "select distinct accountID from bid where auctionID = " + aID + " and accountID != " + accountID + ";";
-//            System.out.println(getAlertAccounts);
+            System.out.println("THIS IS THE FUCKING QUERY: " + getAlertAccounts);
             ResultSet retAU = statement.executeQuery(getAlertAccounts);
 
             while (retAU.next()) {
@@ -99,9 +99,9 @@
                 statement.executeUpdate(alertPerson);
             }
 
-            response.sendRedirect("/dashboard.jsp");
+            response.sendRedirect("dashboard.jsp");
 
-        }  else if ((curBid - maxBid) % bidInc != 0 && (curBid > maxBid)) { // if bid increament is not followed
+        }  else if ((buyMax - maxBid) % bidInc != 0 && (curBid - maxBid) % bidInc != 0 && (curBid > maxBid)) { // if bid increament is not followed
 %>
             <script type="text/javascript">
                 console.log("Entered here");

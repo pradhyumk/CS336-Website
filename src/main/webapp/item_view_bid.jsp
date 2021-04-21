@@ -63,7 +63,10 @@
                 <th>Bid Increment</th>
             </tr>
 
-        <%  while (res.next()) { ;%>
+        <%  float bidIncrement = 0;
+            float currPrice = 0;
+            String aucID = "";
+            while (res.next()) { ;%>
 
         <tr>
             <td><%=res.getString("auctionID")%></td>
@@ -73,7 +76,11 @@
             <td><%=res.getString("closingDateTime")%></td>
             <td><%=String.format("%.2f", res.getFloat("bidIncrement"))%></td>
         </tr>
-        <%}%>
+        <%
+        bidIncrement =  res.getFloat("bidIncrement");
+        currPrice = res.getFloat("currentPrice");
+        aucID = res.getString("auctionID");
+        }%>
         </table>
 
 <%
@@ -93,9 +100,9 @@
 <br><br><br>
 
         <form class="auctionForm" action="insert_bid.jsp" method="post">
-            <input type="number" id="auctionID" name="auctionID" min=1 step="any" placeholder="Auction ID" class="inputForm" step="0.01"required><br><br>
-            <input type="number" id="bidmount" name="bidAmount" min=1 step="any" placeholder="Bid Amount" class="inputForm" step="0.01"required><br><br>
-            <input type="number" id="buyerMaximum" name="buyerMaximum" min=1 step="any" placeholder="Maximum Bid" class="inputForm" step="0.01"required><br><br>
+            <input type="number" id="auctionID" name="auctionID" min="<%=aucID%>" max="<%=aucID%>" placeholder="Auction ID" class="inputForm" value="<%=aucID%>" step="1" required><br><br>
+            <input type="number" id="bidamount" name="bidAmount" min="<%=currPrice + bidIncrement%>" placeholder="Bid Amount (Min: $<%=String.format("%.2f", currPrice + bidIncrement)%>)" class="inputForm" step="<%=bidIncrement%>" required><br><br>
+            <input type="number" id="buyerMaximum" name="buyerMaximum" min="<%=currPrice + bidIncrement%>" placeholder="Maximum Bid (Min: $<%=String.format("%.2f", currPrice + bidIncrement)%>)" class="inputForm" step="<%=bidIncrement%>" required><br><br>
             <input type="submit" value="Place Bid" class="submitButton">
         </form>
 

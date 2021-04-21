@@ -27,6 +27,10 @@
 <h1>Notifications Page</h1>
 <p align="center">Welcome <%=session.getAttribute("user")%> - <a href='logout.jsp'>Log out</a></p>
 
+<form action="dashboard.jsp" class="buttonForm">
+    <input type="submit" value="Go Back" class="createAuctionButton"/>
+</form>
+
 <%
 
     try {
@@ -41,7 +45,7 @@
 
         String accountID = ret.getString(1);
 
-        String getNotifications = "select auctionID, itemName, notificationText, notificationTime from notifications, item where accountID = " + accountID + " and itemID = notifications.auctionID;";
+        String getNotifications = "select auctionID, itemName, notificationText, notificationTime from notifications, item where accountID = " + accountID + " and itemID = notifications.auctionID order by notificationTime DESC;";
         System.out.println(getNotifications);
         ResultSet retGN = statement.executeQuery(getNotifications);
 
@@ -52,15 +56,19 @@
         <th>Item Name</th>
         <th>Message</th>
         <th>Notification Time</th>
+        <th>View Auction</th>
     </tr>
 
-    <%  while (retGN.next()) { ;%>
+    <%  while (retGN.next()) {
+        String curLink = "item_view_bid.jsp?itemID=" + retGN.getString("auctionID");
+    %>
 
     <tr>
         <td><%=retGN.getString("auctionID")%></td>
         <td><%=retGN.getString("itemName")%></td>
         <td><%=retGN.getString("notificationText")%></td>
         <td><%=retGN.getString("notificationTime")%></td>
+        <td><a href="<%=curLink%>">View</a></td>
     </tr>
     <%}%>
 </table>

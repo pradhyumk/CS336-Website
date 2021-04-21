@@ -68,3 +68,4 @@ fabric.properties
 .ideahttpRequests
 
 src/main/webapp/create_auction_action.jsp.old
+src/main/webapp/dashboard_old.jsp

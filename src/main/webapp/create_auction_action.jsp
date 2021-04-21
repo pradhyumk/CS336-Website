@@ -55,7 +55,7 @@
 %>
         <script type="text/javascript">
             alert("The auction cannot start before current time.")
-            window.location.replace("dashboard.jsp")
+            window.location.replace("create_auction.jsp")
         </script>
 
 <%
@@ -66,7 +66,7 @@
  %>
         <script type="text/javascript">
             alert("The closing date cannot be before the start date.");
-            window.location.replace("dashboard.jsp");
+            window.location.replace("create_auction.jsp");
         </script>
 
 <%
@@ -75,7 +75,7 @@
 %>
         <script type="text/javascript">
             alert("The upper limit has to be greater than the starting price.");
-            window.location.replace("dashboard.jsp");
+            window.location.replace("create_auction.jsp");
         </script>
 
 <%
@@ -85,7 +85,7 @@
 %>
         <script type="text/javascript">
             alert("The minimum price has to be greater than the start price.");
-            window.location.replace("dashboard.jsp");
+            window.location.replace("create_auction.jsp");
         </script>
 
 <%
@@ -114,8 +114,17 @@
             String insertItem = "insert into item (itemName, itemDescription) values ('" + itemName + "', '" + itemDescription + "')";
             statement.executeUpdate(insertItem);
             statement.executeUpdate(insertAuction);
-            response.sendRedirect("dashboard.jsp");
 
+            String getAuctionID = "select max(auctionID) from auction;";
+            ResultSet r = statement.executeQuery(getAuctionID);
+            r.next();
+            String curID = r.getString(1);
+            System.out.println("CurID: " + curID);
+            String insertWinning = "insert into winningMember (auctionID, accountID) values (" + curID + ", " + accountID + ");";
+            System.out.println(insertWinning);
+            statement.executeUpdate(insertWinning);
+
+            response.sendRedirect("dashboard.jsp");
         }
 
     } catch (Exception e){
