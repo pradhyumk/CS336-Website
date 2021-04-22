@@ -7,7 +7,7 @@
     String itemName = request.getParameter("itemName");
     String itemDescription = request.getParameter("itemDescription");
     String startPrice = request.getParameter("startPrice");
-    String upperLimit = request.getParameter("upperLimit");
+//    String upperLimit = request.getParameter("upperLimit");
     String minPrice = request.getParameter("minPrice");
     String startDate = request.getParameter("startDate");
     String closingDate = request.getParameter("closingDate");
@@ -44,7 +44,7 @@
         long currentTime = date.getTime() / 1000;
 
         float stPrice = Float.parseFloat(startPrice);
-        float upLimit = Float.parseFloat(upperLimit);
+//        float upLimit = Float.parseFloat(upperLimit);
         float mPrice = Float.parseFloat(minPrice);
 
         System.out.println("---------");
@@ -69,15 +69,15 @@
             window.location.replace("create_auction.jsp");
         </script>
 
-<%
-        } else if (stPrice > upLimit) {
+<%--} else if (stPrice > upLimit) {--%>
 
-%>
-        <script type="text/javascript">
-            alert("The upper limit has to be greater than the starting price.");
-            window.location.replace("create_auction.jsp");
-        </script>
+<%--%>--%>
+<%--        <script type="text/javascript">--%>
+<%--            alert("The upper limit has to be greater than the starting price.");--%>
+<%--            window.location.replace("create_auction.jsp");--%>
+<%--        </script>--%>
 
+<%--<%--%>
 <%
 
         } else if (mPrice < stPrice) {
@@ -110,7 +110,8 @@
 //        String insertAuction = "insert into auction (startPrice, upperLimit, startDate, closingDateTime, bidIncrement, accountID, itemID) values (" + startPrice + ", " + upperLimit + ", '" + startDate + "', '" + closingDate + "', " + bidIncrement + ", " + accountID + ", " + AIValue + ")";
 
 
-            String insertAuction = "insert into auction (startPrice, upperLimit, startDate, closingDateTime, bidIncrement, accountID, minPrice, currentPrice) values ('" + startPrice + "', '" + upperLimit + "', '" + startDate + "', '" + closingDate + "', '" + bidIncrement + "', '" + accountID + "', '" + minPrice + "', '" + startPrice + "')";
+            // removed upperLimit from line below
+            String insertAuction = "insert into auction (startPrice, startDate, closingDateTime, bidIncrement, accountID, minPrice, currentPrice) values ('" + startPrice + "', '" + startDate + "', '" + closingDate + "', '" + bidIncrement + "', '" + accountID + "', '" + minPrice + "', '" + startPrice + "')";
             String insertItem = "insert into item (itemName, itemDescription) values ('" + itemName + "', '" + itemDescription + "')";
             statement.executeUpdate(insertItem);
             statement.executeUpdate(insertAuction);

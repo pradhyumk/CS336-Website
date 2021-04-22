@@ -27,8 +27,8 @@
     <input type="text" id="itemName" name="itemName" placeholder="Item Name" class="inputForm" required><br><br>
     <input type="text" id="itemDescription" name="itemDescription" placeholder="Item Description" class="inputForm" required><br><br>
     <input type="number" id="startPrice" name="startPrice" placeholder="Start Price" class="inputForm" min="1" step="0.01" required><br><br>
-    <input type="number" id="upperLimit" name="upperLimit" placeholder="Upper Limit" class="inputForm" step="0.01" min="1"required><br><br>
-    <input type="number" id="minPrice" name="minPrice" placeholder="Minimum Price" class="inputForm" step="0.01" min="1" required><br><br>
+<%--    <input type="number" id="upperLimit" name="upperLimit" placeholder="Upper Limit" class="inputForm" step="0.01" min="1"required><br><br>--%>
+    <input type="number" id="minPrice" name="minPrice" placeholder="Reserve Price" class="inputForm" step="0.01" min="1" required><br><br>
     <h4>Start Date (format: mm/dd/yyyy, hh:mm a)</h4>
     <input type="datetime-local" id="startDate" name="startDate" placeholder="Start Date" class="inputForm" min='$todaymin' required><br><br>
     <h4>Closing Date (format: mm/dd/yyyy, hh:mm a)</h4>

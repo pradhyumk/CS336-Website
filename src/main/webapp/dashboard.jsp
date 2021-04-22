@@ -161,6 +161,9 @@
                         Statement s10 = con.createStatement();
                         String createAlertPerson = "insert into notifications (accountID, auctionID, notificationText, notificationTime) values (" + IDcreate + ", " + aucID + ", '" + createNotText + "', '" + ret.getTimestamp("closingDateTime") + "');";
                         s10.executeUpdate(createAlertPerson);
+
+                        // notify the people who lost
+
                     }  // no bids were placed on
 
                     if (empty) {
