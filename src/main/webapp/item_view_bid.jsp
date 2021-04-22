@@ -95,7 +95,14 @@
     long epochClosing = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(retGetTime.getTimestamp(1).
             toString()).getTime() / 1000;
 
-    if (epochClosing > currentTime) { %>
+    String getStartTime = "select startDate from auction where auctionID = " + item_ID + ";";
+    ResultSet retGetStart = statement.executeQuery(getStartTime);
+    retGetStart.next();
+
+    long epochStart = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(retGetStart.getTimestamp(1).
+            toString()).getTime() / 1000;
+
+    if (epochClosing > currentTime && currentTime > epochStart) { %>
 
 <br><br><br>
 
@@ -106,7 +113,11 @@
             <input type="submit" value="Place Bid" class="submitButton">
         </form>
 
-<% } %>
+<% } else if (currentTime < epochStart) { %>
+
+<h3>You may not bid on the auction because it has not started yet.</h3>
+
+<%}%>
 
 <br><br><br>
 

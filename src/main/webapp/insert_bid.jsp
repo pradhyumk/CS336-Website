@@ -36,13 +36,13 @@
     try {
         Class.forName("com.mysql.jdbc.Driver");
         Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/buyme", "root", "password@123");
-        Statement statement = con.createStatement();
+        Statement s1 = con.createStatement();
 
         String usern = (String) session.getAttribute("user");
         String queryAccountID = "select accountID from buyeraccount where username = '" + usern + "';";
 
-        ResultSet ret = statement.executeQuery(queryAccountID);
-//        ret.next();
+        ResultSet ret = s1.executeQuery(queryAccountID);
+        ret.next();
 
         String accountID = ret.getString(1);
 
@@ -51,7 +51,8 @@
         String buyerMaximum = request.getParameter("buyerMaximum");
 
         String getMaxBid = "select currentPrice from auction where auctionID = " + aID + ";";
-        ResultSet mbRet = statement.executeQuery(getMaxBid);
+        Statement s2 = con.createStatement();
+        ResultSet mbRet = s2.executeQuery(getMaxBid);
 
         mbRet.next();
         float curBid = Float.parseFloat(bidAmount);
@@ -62,7 +63,8 @@
 
         String getBidInc = "select bidIncrement from auction where auctionID = " + aID + ";";
         System.out.println("get bid inc: " + getBidInc);
-        ResultSet bdRet = statement.executeQuery(getBidInc);
+        Statement s3 = con.createStatement();
+        ResultSet bdRet = s3.executeQuery(getBidInc);
 
         bdRet.next();
         float bidInc = Float.parseFloat(bdRet.getString(1));
@@ -77,26 +79,27 @@
                     ", " + buyerMaximum + ", " + aID + ", " + accountID + ");";
 
             System.out.println("insetring bid: " + insertBid);
+            Statement s4 = con.createStatement();
+            s4.executeUpdate(insertBid);
 
-            statement.executeUpdate(insertBid);
-
+            Statement s5 = con.createStatement();
             String updateCurrentPrice = "update auction set currentPrice = " + bidAmount + " where auctionID = " + aID + ";";
-            statement.executeUpdate(updateCurrentPrice);
+            s5.executeUpdate(updateCurrentPrice);
 
             // add alerts for others users
-
+            Statement s6 = con.createStatement();
             String getAlertAccounts = "select distinct accountID from bid where auctionID = " + aID + " and accountID != " + accountID + ";";
             System.out.println("THIS IS THE FUCKING QUERY: " + getAlertAccounts);
-            ResultSet retAU = statement.executeQuery(getAlertAccounts);
+            ResultSet retAU = s6.executeQuery(getAlertAccounts);
 
             while (retAU.next()) {
                 String curID = retAU.getString("accountID");
                 String notText = "The bid you have placed on this item has been out-bid.";
 
                 String alertPerson = "insert into notifications (accountID, auctionID, notificationText, notificationTime) values (" + curID + ", " + aID + ", '" + notText + "', '" + currentTime + "');";
-
+                Statement s7 = con.createStatement();
                 System.out.println("Alert Query: " + alertPerson);
-                statement.executeUpdate(alertPerson);
+                s7.executeUpdate(alertPerson);
             }
 
             response.sendRedirect("dashboard.jsp");

@@ -120,7 +120,7 @@
             r.next();
             String curID = r.getString(1);
             System.out.println("CurID: " + curID);
-            String insertWinning = "insert into winningMember (auctionID, accountID) values (" + curID + ", " + accountID + ");";
+            String insertWinning = "insert into winningMember (auctionID, accountID, winningAccountID) values (" + curID + ", " + accountID + "," + -2 + ");";
             System.out.println(insertWinning);
             statement.executeUpdate(insertWinning);
 
