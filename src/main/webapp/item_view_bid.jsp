@@ -93,7 +93,7 @@
         </td>
         <td><%=res.getString("itemColor")%>
         </td>
-        <td><%=String.format("%.2f", res.getFloat("currentPrice"))%>
+        <td><%="$" + String.format("%.2f", res.getFloat("currentPrice"))%>
         </td>
         <td><%=res.getString("closingDateTime")%>
         </td>

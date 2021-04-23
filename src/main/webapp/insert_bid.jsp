@@ -62,7 +62,7 @@
         logger.info("mbet: " + mbRet.getString(1));
 
         String getBidInc = "select bidIncrement from auction where auctionID = " + aID + ";";
-        System.out.println("get bid inc: " + getBidInc);
+
         Statement s3 = con.createStatement();
         ResultSet bdRet = s3.executeQuery(getBidInc);
 
@@ -71,14 +71,14 @@
 
         float buyMax = Float.parseFloat(buyerMaximum);
 
-        if (maxBid < curBid && ((curBid - maxBid) % bidInc == 0) && ((buyMax - maxBid) % bidInc == 0) && buyMax >= curBid) { // if current bid is greater than the max bid and it folllows the increment and the maxbod also follows the increament
+        if (maxBid < curBid && ((curBid - maxBid) % bidInc == 0) && ((buyMax - maxBid) % bidInc == 0) && buyMax >= curBid) { // if current bid is greater than the max bid and it folllows the increment and the maxbid also follows the increment
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String currentTime = format.format(new Date());
 
             String insertBid = "insert into bid (bidDateTime, bidAmount, buyerMaximum, auctionID, accountID) values ('" + currentTime + "', " + bidAmount +
                     ", " + buyerMaximum + ", " + aID + ", " + accountID + ");";
 
-            System.out.println("insetring bid: " + insertBid);
+
             Statement s4 = con.createStatement();
             s4.executeUpdate(insertBid);
 
@@ -89,7 +89,7 @@
             // add alerts for others users
             Statement s6 = con.createStatement();
             String getAlertAccounts = "select distinct accountID from bid where auctionID = " + aID + " and accountID != " + accountID + ";";
-            System.out.println("THIS IS THE FUCKING QUERY: " + getAlertAccounts);
+
             ResultSet retAU = s6.executeQuery(getAlertAccounts);
 
             while (retAU.next()) {
@@ -98,8 +98,52 @@
 
                 String alertPerson = "insert into notifications (accountID, auctionID, notificationText, notificationTime) values (" + curID + ", " + aID + ", '" + notText + "', '" + currentTime + "');";
                 Statement s7 = con.createStatement();
-                System.out.println("Alert Query: " + alertPerson);
                 s7.executeUpdate(alertPerson);
+            }
+
+            // Auto-Bidding
+
+            Statement s7 = con.createStatement();
+
+            String getNum = "select distinct count(distinct accountID) from bid where auctionID = " + aID + ";";
+            ResultSet retNum = s7.executeQuery(getNum);
+            retNum.next();
+            int count = Integer.parseInt(retNum.getString(1));
+
+            if (count == 1) {
+                System.out.println("Only one bidder on auction (AI).");
+            } else {
+
+                System.out.println("Many bidders on auction (AI).");
+
+                // get list of bidders on auction
+                Statement s8 = con.createStatement();
+                String getBidders = "select * from bid where auctionID = " + aID + ";";
+                ResultSet retBidders = s8.executeQuery(getBidders);
+
+                // get max bid placed
+                Statement s9 = con.createStatement();
+                String getMax = "select max(bidAmount) from bid where auctionID = " + aID + ";";
+                ResultSet retMax = s9.executeQuery(getMax);
+                retMax.next();
+                float theMaxBid = Float.parseFloat(retMax.getString(1));
+
+                // get second max bid
+                Statement s10 = con.createStatement();
+                String getSecMax = "select max(bidAmount) from bid b where auctionID = " + aID + " and bidAmount < (select max(bidAmount) from bid b2 where b2.auctionID = " + aID + ");";
+                System.out.println(getSecMax);
+                ResultSet retSecMax = s10.executeQuery(getSecMax);
+                float secMaxBid = 0;
+
+                while (retSecMax.next()) {
+                    secMaxBid = Float.parseFloat(retSecMax.getString(1));
+                }
+
+
+                while (retBidders.next()) {
+
+                }
+
             }
 
             response.sendRedirect("dashboard.jsp");

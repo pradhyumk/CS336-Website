@@ -132,7 +132,6 @@
     Statement s2 = con.createStatement();
     //  url.com/dashboard?user=7349857&pass=4398579
     String view = request.getParameter("criteria");
-    System.out.println("View: " + view);
 
     if(view == null) {
         getAuctions = "select auctionID, itemName, if(item.subCategoryID = 1, \"Sneakers\", if (item.subCategoryID = 2, \"Sandals\", if(item.subCategoryID = 3, \"Slippers\", \"None\"))) as subCategoryName,itemDescription, currentPrice, startDate, closingDateTime from auction, item where auctionID = itemID;";
