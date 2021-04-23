@@ -14,6 +14,11 @@
 
 <link rel="stylesheet" href="styles2.css">
 
+<script>
+    if (window.history.replaceState) {
+        window.history.replaceState(null, null, window.location.href);
+    }
+</script>
 
 <%  Logger logger = Logger.getLogger("dashboard.jsp");
     if (session.getAttribute("user") == null){ %>
@@ -36,6 +41,40 @@
     <input type="submit" value="View Notifications" class="submitButton">
 </form>
 
+
+<form action="view_auction_bids.jsp" class="buttonForm">
+    <input type="submit" value="View Your Auctions/Bids" class="submitButton">
+</form>
+
+<form action="dashboard.jsp" class="buttonFormRight">
+    <input type="text" id="search" name="search" placeholder="Search" class="inputForm" required>
+</form>
+
+<br><br><br>
+<div class="dropdown" style="float:right; margin-right: 10px;">
+<form action="dashboard.jsp" class="buttonForm" method="POST">
+    <label for="criteria">Sort by:</label>
+    <select name="criteria" id="criteria" onchange='this.form.submit();'>
+        <option>Sort</option>
+        <optgroup label="Current Price">
+            <option value="asc">Ascending</option>
+            <option value="dsc">Descending</option>
+        </optgroup>
+        <optgroup label="Start Time">
+            <option value="ascTime">Ascending</option>
+            <option value="dscTime">Descending</option>
+        </optgroup>
+        <optgroup label="Closing Time">
+            <option value="ascClosingTime">Ascending</option>
+            <option value="dscClosingTime">Descending</option>
+        </optgroup>
+    </select>
+    <noscript><input type="submit" value="Submit"></noscript>
+</form>
+</div>
+
+<br><br><br>
+
 <%
 
     try {
@@ -47,7 +86,7 @@
 
         String usern = (String) session.getAttribute("user");
         String queryAccountID = "select accountID from buyeraccount where username = '" + usern + "';";
-        System.out.println(queryAccountID);
+        //System.out.println(queryAccountID);
 
         ResultSet retID = statement.executeQuery(queryAccountID);
         retID.next();
@@ -55,6 +94,7 @@
 
 
 %>
+
     <table id="auctiondata">
         <tr>
             <th>Auction ID</th>
@@ -68,8 +108,28 @@
         </tr>
 
 <%
+    String getAuctions = "";
     Statement s2 = con.createStatement();
-    String getAuctions = "select auctionID, itemName, itemDescription, currentPrice, startDate, closingDateTime from auction, item where auctionID = itemID;";
+    //  url.com/dashboard?user=7349857&pass=4398579
+    String view = request.getParameter("criteria");
+    System.out.println("View: " + view);
+
+    if(view == null) {
+        getAuctions = "select auctionID, itemName, itemDescription, currentPrice, startDate, closingDateTime from auction, item where auctionID = itemID;";
+    } else if (view.compareTo("asc") == 0){
+        getAuctions = "select auctionID, itemName, itemDescription, currentPrice, startDate, closingDateTime from auction, item where auctionID = itemID order by currentPrice ASC;";
+    } else if (view.compareTo("dsc") == 0) {
+        getAuctions = "select auctionID, itemName, itemDescription, currentPrice, startDate, closingDateTime from auction, item where auctionID = itemID order by currentPrice DESC;";
+    } else if (view.compareTo("ascTime") == 0) {
+        getAuctions = "select auctionID, itemName, itemDescription, currentPrice, startDate, closingDateTime from auction, item where auctionID = itemID order by startDate ASC;";
+    } else if (view.compareTo("dscTime") == 0) {
+        getAuctions = "select auctionID, itemName, itemDescription, currentPrice, startDate, closingDateTime from auction, item where auctionID = itemID order by startDate DESC;";
+    } else if (view.compareTo("ascClosingTime") == 0) {
+        getAuctions = "select auctionID, itemName, itemDescription, currentPrice, startDate, closingDateTime from auction, item where auctionID = itemID order by closingDateTime ASC;";
+    } else if (view.compareTo("dscClosingTime") == 0) {
+        getAuctions = "select auctionID, itemName, itemDescription, currentPrice, startDate, closingDateTime from auction, item where auctionID = itemID order by closingDateTime DESC;";
+    }
+
 
     ResultSet ret = s2.executeQuery(getAuctions);
 
@@ -105,7 +165,7 @@
 
             if (val == -2) { // if not declared a winning member
 
-                System.out.println("enter next()");
+               // System.out.println("enter next()");
 
                 // get reserve and current price
                 Statement s4 = con.createStatement();
@@ -122,8 +182,8 @@
                 retCP.next();
                 float price = Float.parseFloat(retCP.getString(1));
 
-                System.out.println("Reserve Price: " + reserve);
-                System.out.println("Final Price: " + price);
+              //  System.out.println("Reserve Price: " + reserve);
+              //  System.out.println("Final Price: " + price);
 
                 if (reserve <= price) {
 
@@ -189,7 +249,7 @@
 
                 } else { // reserve price has not been hit
 
-                    System.out.println("entre else");
+                  //  System.out.println("entre else");
 
                     // we can add -1 to winning member
                     Statement s14 = con.createStatement();
@@ -210,10 +270,10 @@
                 }
 
             } else {
-                System.out.println("there was no winner");
+                //System.out.println("there was no winner");
             }
         } else {
-            System.out.println("Auction is open");
+           // System.out.println("Auction is open");
         }
 
 

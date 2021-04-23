@@ -33,7 +33,7 @@
     <input type="datetime-local" id="startDate" name="startDate" placeholder="Start Date" class="inputForm" min='$todaymin' required><br><br>
     <h4>Closing Date (format: mm/dd/yyyy, hh:mm a)</h4>
     <input type="datetime-local" id="closingDate" name="closingDate" placeholder="Closing Date" class="inputForm" min='$todaymin' required><br><br>
-    <input type="number" id="bidIncrement" name="bidIncrement" placeholder="Bid Increment" class="inputForm" step="0.01" min="1" required><br><br>
+    <input type="number" id="bidIncrement" name="bidIncrement" placeholder="Bid Increment" class="inputForm" step="0.01" min="0.01" required><br><br>
     <input type="submit" value="Create Auction" class="submitButton">
 
 </form>
