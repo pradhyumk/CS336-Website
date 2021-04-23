@@ -6,21 +6,31 @@
     Logger logger = Logger.getLogger("create_auction_action.jsp");
     String itemName = request.getParameter("itemName");
     String itemDescription = request.getParameter("itemDescription");
+    String itemSize = request.getParameter("itemSize");
+    String brand = request.getParameter("brand");
+    String color = request.getParameter("color");
     String startPrice = request.getParameter("startPrice");
-//    String upperLimit = request.getParameter("upperLimit");
     String minPrice = request.getParameter("minPrice");
     String startDate = request.getParameter("startDate");
     String closingDate = request.getParameter("closingDate");
     String bidIncrement = request.getParameter("bidIncrement");
+    String subCategory = request.getParameter("subcategory");
 
     try{
+
+        int subCategoryID = 1;
+
+        if (subCategory.compareTo("sneakers") == 0) {
+            subCategoryID = 1;
+        } else if (subCategory.compareTo("sandals") == 0) {
+            subCategoryID = 2;
+        } else if (subCategory.compareTo("slippers") == 0) {
+            subCategoryID = 3;
+        }
 
         Class.forName("com.mysql.jdbc.Driver");
         Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/buyme", "root", "password@123");
         Statement statement = con.createStatement();
-
-
-
 
         if (session.getAttribute("user") == null){
 
@@ -111,8 +121,8 @@
 
 
             // removed upperLimit from line below
-            String insertAuction = "insert into auction (startPrice, startDate, closingDateTime, bidIncrement, accountID, minPrice, currentPrice) values ('" + startPrice + "', '" + startDate + "', '" + closingDate + "', '" + bidIncrement + "', '" + accountID + "', '" + minPrice + "', '" + startPrice + "')";
-            String insertItem = "insert into item (itemName, itemDescription) values ('" + itemName + "', '" + itemDescription + "')";
+            String insertAuction = "insert into auction (startPrice, startDate, closingDateTime, bidIncrement, accountID, minPrice, currentPrice) values ('" + startPrice + "', '" + startDate + "', '" + closingDate + "', '" + bidIncrement + "', '" + accountID + "', '" + minPrice + "', '" + startPrice + "');";
+            String insertItem = "insert into item (itemName, itemDescription, subCategoryID, itemColor, itemSize, itemBrand) values ('" + itemName + "', '" + itemDescription + "', "+ subCategoryID + ",  '"+ color + "',  " + itemSize + ", '" + brand+ "');";
             statement.executeUpdate(insertItem);
             statement.executeUpdate(insertAuction);
 

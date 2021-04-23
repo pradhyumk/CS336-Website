@@ -48,7 +48,7 @@
 
         String accountID = ret.getString(1);
 
-        String getAuctions = "select auction.auctionID, itemName, itemDescription, currentPrice, startDate, " +
+        String getAuctions = "select auction.auctionID, itemName, if(item.subCategoryID = 1, \"Sneakers\", if (item.subCategoryID = 2, \"Sandals\", if(item.subCategoryID = 3, \"Slippers\", \"None\"))) as subCategoryName, itemDescription, itemBrand, itemSize, itemColor, currentPrice, startDate, " +
                 "closingDateTime, bidIncrement from auction, item where item.itemID = " + item_ID + " and auction.auctionID = " +
                 item_ID + ";";
         Statement s2 = con.createStatement();
@@ -58,7 +58,11 @@
     <tr>
         <th>Auction ID</th>
         <th>Item Name</th>
-        <th>Item Description</th>
+        <th>Sub-Category</th>
+        <th>Description</th>
+        <th>Brand</th>
+        <th>Size</th>
+        <th>Color</th>
         <th>Current Price</th>
         <th>Closing Date Time</th>
         <th>Bid Increment</th>
@@ -76,7 +80,15 @@
         </td>
         <td><%=res.getString("itemName")%>
         </td>
+        <td><%=res.getString("subCategoryName")%>
+        </td>
         <td><%=res.getString("itemDescription")%>
+        </td>
+        <td><%=res.getString("itemBrand")%>
+        </td>
+        <td><%=res.getString("itemSize")%>
+        </td>
+        <td><%=res.getString("itemColor")%>
         </td>
         <td><%=String.format("%.2f", res.getFloat("currentPrice"))%>
         </td>
@@ -192,6 +204,67 @@
         <td><%=retBid.getString("bidDateTime") %>
         </td>
     </tr>
+    <%}%>
+</table>
+
+<br><br><br>
+
+<h3>Similar Items to this Item</h3>
+<br><br>
+
+<%
+    String getSimilar = "";
+    Statement s7 = con.createStatement();
+    ResultSet retSim = s7.executeQuery(getBids);
+%>
+
+<table id="auctiondata">
+    <tr>
+        <th>Auction ID</th>
+        <th>Sub-Category</th>
+        <th>Item Name</th>
+        <th>Description</th>
+        <th>Brand</th>
+        <th>Size</th>
+        <th>Color</th>
+        <th>Current Price</th>
+        <th>Closing Date Time</th>
+        <th>Bid Increment</th>
+    </tr>
+
+    <% while (retSim.next()) {
+
+    String curaucID = retSim.getString("auctionID");
+    String itemName = retSim.getString("itemName");
+    String itemDescription = retSim.getString("itemDescription");
+    String currentPrice = "$" + String.format("%.2f", retSim.getFloat("currentPrice"));
+    Timestamp startDate = retSim.getTimestamp("startDate");
+    Timestamp closingDateTime = retSim.getTimestamp("ClosingDateTime");
+
+        // compare current time to closing date tim
+        String st = "Open";
+        long epoch = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(retSim.getTimestamp("closingDateTime").
+                toString()).getTime() /1000;
+
+        if (epoch < currentTime) {
+            st = "Closed"; }
+
+    String curLink = "item_view_bid.jsp?itemID=" + curaucID;
+
+    %>
+
+    <tr>
+        <td><%=aucID%></td>
+        <td><%=itemName %></td>
+        <td><%=itemDescription%></td>
+        <td><%=currentPrice%></td>
+        <td><%=startDate%></td>
+        <td><%=closingDateTime%></td>
+        <td><%=st%></td>
+        <td><a href="<%=curLink%>">View</a></td>
+
+    </tr>
+
     <%}%>
 </table>
 

@@ -30,7 +30,8 @@
 <% return; } %>
 
 <h1>BuyMe Dashboard</h1>
-<p align="center">Welcome <%=session.getAttribute("user")%> - <a href='logout.jsp'>Log out</a></p>
+<p align="center">Welcome <%=session.getAttribute("user")%> - <a href='logout.jsp'>Log Out</a></p>
+<p align="center">This Action Cannot be Undone - <a href='delete.jsp'>Delete Account</a></p>
 <br><br><br>
 
 <form action="create_auction.jsp" class="buttonForm">
@@ -46,8 +47,15 @@
     <input type="submit" value="View Your Auctions/Bids" class="submitButton">
 </form>
 
-<form action="dashboard.jsp" class="buttonFormRight">
-    <input type="text" id="search" name="search" placeholder="Search" class="inputForm" required>
+<form action="search_action.jsp" class="buttonFormRight">
+    <input type="text" id="search" name="search" placeholder="Search" class="inputForm" required><br><br>
+    <select name="category" id="category">
+        <option>Search By:</option>
+            <option value="itemName">Item Name</option>
+            <option value="itemDescription">Item Description</option>
+            <option value="startDate">Start Date</option>
+            <option value="closingDate">Closing Date</option>
+    </select>
 </form>
 
 <br><br><br>
@@ -67,6 +75,11 @@
         <optgroup label="Closing Time">
             <option value="ascClosingTime">Ascending</option>
             <option value="dscClosingTime">Descending</option>
+        </optgroup>
+        <optgroup label="Sub-Category">
+            <option value="sortSneakers">Sneakers</option>
+            <option value="sortSlippers">Slippers</option>
+            <option value="sortSandals">Sandals</option>
         </optgroup>
     </select>
     <noscript><input type="submit" value="Submit"></noscript>
@@ -99,6 +112,7 @@
         <tr>
             <th>Auction ID</th>
             <th>Item Name</th>
+            <th>Sub-Category</th>
             <th>Item Description</th>
             <th>Current Price</th>
             <th>Start Date</th>
@@ -106,6 +120,7 @@
             <th>Status</th>
             <th>View Auction</th>
         </tr>
+
 
 <%
     String getAuctions = "";
@@ -115,19 +130,25 @@
     System.out.println("View: " + view);
 
     if(view == null) {
-        getAuctions = "select auctionID, itemName, itemDescription, currentPrice, startDate, closingDateTime from auction, item where auctionID = itemID;";
+        getAuctions = "select auctionID, itemName, if(item.subCategoryID = 1, \"Sneakers\", if (item.subCategoryID = 2, \"Sandals\", if(item.subCategoryID = 3, \"Slippers\", \"None\"))) as subCategoryName,itemDescription, currentPrice, startDate, closingDateTime from auction, item where auctionID = itemID;";
     } else if (view.compareTo("asc") == 0){
-        getAuctions = "select auctionID, itemName, itemDescription, currentPrice, startDate, closingDateTime from auction, item where auctionID = itemID order by currentPrice ASC;";
+        getAuctions = "select auctionID, itemName, if(item.subCategoryID = 1, \"Sneakers\", if (item.subCategoryID = 2, \"Sandals\", if(item.subCategoryID = 3, \"Slippers\", \"None\"))) as subCategoryName,itemDescription, currentPrice, startDate, closingDateTime from auction, item where auctionID = itemID order by currentPrice ASC;";
     } else if (view.compareTo("dsc") == 0) {
-        getAuctions = "select auctionID, itemName, itemDescription, currentPrice, startDate, closingDateTime from auction, item where auctionID = itemID order by currentPrice DESC;";
+        getAuctions = "select auctionID, itemName, if(item.subCategoryID = 1, \"Sneakers\", if (item.subCategoryID = 2, \"Sandals\", if(item.subCategoryID = 3, \"Slippers\", \"None\"))) as subCategoryName, itemDescription, currentPrice, startDate, closingDateTime from auction, item where auctionID = itemID order by currentPrice DESC;";
     } else if (view.compareTo("ascTime") == 0) {
-        getAuctions = "select auctionID, itemName, itemDescription, currentPrice, startDate, closingDateTime from auction, item where auctionID = itemID order by startDate ASC;";
+        getAuctions = "select auctionID, itemName, if(item.subCategoryID = 1, \"Sneakers\", if (item.subCategoryID = 2, \"Sandals\", if(item.subCategoryID = 3, \"Slippers\", \"None\"))) as subCategoryName, itemDescription, currentPrice, startDate, closingDateTime from auction, item where auctionID = itemID order by startDate ASC;";
     } else if (view.compareTo("dscTime") == 0) {
-        getAuctions = "select auctionID, itemName, itemDescription, currentPrice, startDate, closingDateTime from auction, item where auctionID = itemID order by startDate DESC;";
+        getAuctions = "select auctionID, itemName, if(item.subCategoryID = 1, \"Sneakers\", if (item.subCategoryID = 2, \"Sandals\", if(item.subCategoryID = 3, \"Slippers\", \"None\"))) as subCategoryName, itemDescription, currentPrice, startDate, closingDateTime from auction, item where auctionID = itemID order by startDate DESC;";
     } else if (view.compareTo("ascClosingTime") == 0) {
-        getAuctions = "select auctionID, itemName, itemDescription, currentPrice, startDate, closingDateTime from auction, item where auctionID = itemID order by closingDateTime ASC;";
+        getAuctions = "select auctionID, itemName, if(item.subCategoryID = 1, \"Sneakers\", if (item.subCategoryID = 2, \"Sandals\", if(item.subCategoryID = 3, \"Slippers\", \"None\"))) as subCategoryName, itemDescription, currentPrice, startDate, closingDateTime from auction, item where auctionID = itemID order by closingDateTime ASC;";
     } else if (view.compareTo("dscClosingTime") == 0) {
-        getAuctions = "select auctionID, itemName, itemDescription, currentPrice, startDate, closingDateTime from auction, item where auctionID = itemID order by closingDateTime DESC;";
+        getAuctions = "select auctionID, itemName, if(item.subCategoryID = 1, \"Sneakers\", if (item.subCategoryID = 2, \"Sandals\", if(item.subCategoryID = 3, \"Slippers\", \"None\"))) as subCategoryName, itemDescription, currentPrice, startDate, closingDateTime from auction, item where auctionID = itemID order by closingDateTime DESC;";
+    } else if (view.compareTo("sortSneakers") == 0) {
+        getAuctions = "select auctionID, itemName, if(item.subCategoryID = 1, \"Sneakers\", if (item.subCategoryID = 2, \"Sandals\", if(item.subCategoryID = 3, \"Slippers\", \"None\"))) as subCategoryName, itemDescription, currentPrice, startDate, closingDateTime from auction, item where auctionID = itemID and item.subcategoryID = 1;";
+    } else if (view.compareTo("sortSandals") == 0) {
+        getAuctions = "select auctionID, itemName, if(item.subCategoryID = 1, \"Sneakers\", if (item.subCategoryID = 2, \"Sandals\", if(item.subCategoryID = 3, \"Slippers\", \"None\"))) as subCategoryName, itemDescription, currentPrice, startDate, closingDateTime from auction, item where auctionID = itemID and item.subcategoryID = 2;";
+    } else if (view.compareTo("sortSlippers") == 0) {
+        getAuctions = "select auctionID, itemName, if(item.subCategoryID = 1, \"Sneakers\", if (item.subCategoryID = 2, \"Sandals\", if(item.subCategoryID = 3, \"Slippers\", \"None\"))) as subCategoryName, itemDescription, currentPrice, startDate, closingDateTime from auction, item where auctionID = itemID and item.subcategoryID = 3;";
     }
 
 
@@ -137,6 +158,7 @@
 
         String aucID = ret.getString("auctionID");
         String itemName = ret.getString("itemName");
+        String subCategoryName = ret.getString("subCategoryName");
         String itemDescription = ret.getString("itemDescription");
         String currentPrice = "$" + String.format("%.2f", ret.getFloat("currentPrice"));
         Timestamp startDate = ret.getTimestamp("startDate");
@@ -283,7 +305,8 @@
 %>
         <tr>
             <td><%=aucID%></td>
-            <td><%=itemName %></td>
+            <td><%=itemName%></td>
+            <td><%=subCategoryName%></td>
             <td><%=itemDescription%></td>
             <td><%=currentPrice%></td>
             <td><%=startDate%></td>
