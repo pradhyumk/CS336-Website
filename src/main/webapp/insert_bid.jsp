@@ -70,7 +70,7 @@
         float bidInc = Float.parseFloat(bdRet.getString(1));
 
         float buyMax = Float.parseFloat(buyerMaximum);
-        //35 and 45
+
         if (maxBid < curBid && ((curBid - maxBid) % bidInc == 0) && ((buyMax - maxBid) % bidInc == 0) && buyMax >= curBid) { // if current bid is greater than the max bid and it folllows the increment and the maxbod also follows the increament
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String currentTime = format.format(new Date());

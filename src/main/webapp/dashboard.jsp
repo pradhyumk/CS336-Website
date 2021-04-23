@@ -42,26 +42,31 @@
     <input type="submit" value="View Notifications" class="submitButton">
 </form>
 
+<form action="notifications_page.jsp" class="buttonForm">
+    <input type="submit" value="Set Alerts" class="submitButton">
+</form>
+
 
 <form action="view_auction_bids.jsp" class="buttonForm">
     <input type="submit" value="View Your Auctions/Bids" class="submitButton">
 </form>
 
-<form action="search_action.jsp" class="buttonFormRight">
-    <input type="text" id="search" name="search" placeholder="Search" class="inputForm" required><br><br>
-    <select name="category" id="category">
-        <option>Search By:</option>
+<form action="search_action.jsp" class="buttonFormRight" style="margin-right:20px">
+    <select name="category" id="category" >
+        <option value="noneselected" disabled="disabled" selected="selected">Search By:</option>
             <option value="itemName">Item Name</option>
             <option value="itemDescription">Item Description</option>
-            <option value="startDate">Start Date</option>
-            <option value="closingDate">Closing Date</option>
-    </select>
+            <option value="itemColor">Item Color</option>
+            <option value="itemBrand">Item Brand</option>
+            <option value="itemSize">Item Size</option>
+    </select><br><br>
+    <input type="text" id="search" name="search" placeholder="Search" class="inputForm" required>
 </form>
 
-<br><br><br>
-<div class="dropdown" style="float:right; margin-right: 10px;">
+<br><br><br><br><br>
+<div class="dropdown" style="float:left; margin-left: 10px;">
 <form action="dashboard.jsp" class="buttonForm" method="POST">
-    <label for="criteria">Sort by:</label>
+    <label for="criteria">Sort results by:</label>
     <select name="criteria" id="criteria" onchange='this.form.submit();'>
         <option>Sort</option>
         <optgroup label="Current Price">

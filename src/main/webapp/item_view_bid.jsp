@@ -48,7 +48,7 @@
 
         String accountID = ret.getString(1);
 
-        String getAuctions = "select auction.auctionID, itemName, if(item.subCategoryID = 1, \"Sneakers\", if (item.subCategoryID = 2, \"Sandals\", if(item.subCategoryID = 3, \"Slippers\", \"None\"))) as subCategoryName, itemDescription, itemBrand, itemSize, itemColor, currentPrice, startDate, " +
+        String getAuctions = "select auction.auctionID, itemName, if(item.subCategoryID = 1, 'Sneakers', if (item.subCategoryID = 2, 'Sandals', if(item.subCategoryID = 3, \"Slippers\", \"None\"))) as subCategoryName, itemDescription, itemBrand, itemSize, itemColor, currentPrice, startDate, " +
                 "closingDateTime, bidIncrement from auction, item where item.itemID = " + item_ID + " and auction.auctionID = " +
                 item_ID + ";";
         Statement s2 = con.createStatement();
@@ -72,15 +72,18 @@
         float bidIncrement = 0;
         float currPrice = 0;
         String aucID = "";
+        String subCatName = "";
         while (res.next()) {
+            subCatName = res.getString("subCategoryName");
+            aucID = res.getString("auctionID");
     %>
 
     <tr>
-        <td><%=res.getString("auctionID")%>
+        <td><%=aucID%>
         </td>
         <td><%=res.getString("itemName")%>
         </td>
-        <td><%=res.getString("subCategoryName")%>
+        <td><%=subCatName%>
         </td>
         <td><%=res.getString("itemDescription")%>
         </td>
@@ -101,7 +104,7 @@
     <%
             bidIncrement = res.getFloat("bidIncrement");
             currPrice = res.getFloat("currentPrice");
-            aucID = res.getString("auctionID");
+
         }%>
 </table>
 
@@ -214,15 +217,24 @@
 
 <%
     String getSimilar = "";
+
+    if (subCatName.compareTo("Sneakers") == 0) {
+        getSimilar = "select auctionID, itemName, if(item.subCategoryID = 1, 'Sneakers', if (item.subCategoryID = 2, \"Sandals\", if(item.subCategoryID = 3, \"Slippers\", \"None\"))) as subCategoryName, itemDescription, itemSize, itemBrand, itemColor, currentPrice, startDate, closingDateTime from auction, item where item.subCategoryID = 1 and auctionID = itemID and auctionID != " + aucID + ";";
+        System.out.println("getSimilar: " + getSimilar);
+    } else if (subCatName.compareTo("Sandals") == 0) {
+        getSimilar = "select auctionID, itemName, if(item.subCategoryID = 1, \"Sneakers\", if (item.subCategoryID = 2, \"Sandals\", if(item.subCategoryID = 3, \"Slippers\", \"None\"))) as subCategoryName, itemDescription, itemSize, itemBrand, itemColor, currentPrice, startDate, closingDateTime from auction, item where item.subCategoryID = 2 and auctionID = itemID and auctionID != " + aucID + ";";
+    } else if (subCatName.compareTo("Slippers") == 0) {
+        getSimilar = "select auctionID, itemName, if(item.subCategoryID = 1, \"Sneakers\", if (item.subCategoryID = 2, \"Sandals\", if(item.subCategoryID = 3, \"Slippers\", \"None\"))) as subCategoryName, itemDescription, itemSize, itemBrand, itemColor, currentPrice, startDate, closingDateTime from auction, item where item.subCategoryID = 3 and auctionID = itemID and auctionID != " + aucID + ";";
+    }
     Statement s7 = con.createStatement();
-    ResultSet retSim = s7.executeQuery(getBids);
+    ResultSet retSim = s7.executeQuery(getSimilar);
 %>
 
 <table id="auctiondata">
     <tr>
         <th>Auction ID</th>
-        <th>Sub-Category</th>
         <th>Item Name</th>
+        <th>Sub-Category</th>
         <th>Description</th>
         <th>Brand</th>
         <th>Size</th>
@@ -230,13 +242,19 @@
         <th>Current Price</th>
         <th>Closing Date Time</th>
         <th>Bid Increment</th>
+        <th>Status</th>
+        <th>View Auction</th>
     </tr>
 
     <% while (retSim.next()) {
 
     String curaucID = retSim.getString("auctionID");
     String itemName = retSim.getString("itemName");
+    String subcategory = retSim.getString("subCategoryName");
     String itemDescription = retSim.getString("itemDescription");
+    String itemBrand = retSim.getString("itemBrand");
+    String itemSize = retSim.getString("itemSize");
+    String itemColor = retSim.getString("itemColor");
     String currentPrice = "$" + String.format("%.2f", retSim.getFloat("currentPrice"));
     Timestamp startDate = retSim.getTimestamp("startDate");
     Timestamp closingDateTime = retSim.getTimestamp("ClosingDateTime");
@@ -254,9 +272,13 @@
     %>
 
     <tr>
-        <td><%=aucID%></td>
-        <td><%=itemName %></td>
+        <td><%=curaucID%></td>
+        <td><%=itemName%></td>
+        <td><%=subcategory%></td>
         <td><%=itemDescription%></td>
+        <td><%=itemBrand%></td>
+        <td><%=itemSize%></td>
+        <td><%=itemColor%></td>
         <td><%=currentPrice%></td>
         <td><%=startDate%></td>
         <td><%=closingDateTime%></td>
