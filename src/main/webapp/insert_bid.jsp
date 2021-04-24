@@ -45,13 +45,24 @@
         ret.next();
 
         String accountID = ret.getString(1);
-
         String aID = request.getParameter("auctionID");
         String bidAmount = request.getParameter("bidAmount");
-        String buyerMaximum = request.getParameter("buyerMaximum");
+        boolean autoBidOption = request.getParameter("autoBidOption") != null;
+
+        System.out.println("Insert Bid Vals: " + accountID + " " + aID + " " + bidAmount + " " + autoBidOption + " " + request.getParameter("buyerMaximum"));
+        String buyerMaximum = "";
+
+        if (autoBidOption) {
+            buyerMaximum = request.getParameter("buyerMaximum");
+        } else {
+            buyerMaximum = bidAmount;
+        }
+
+        System.out.println("I have reached here!");
 
         String getMaxBid = "select currentPrice from auction where auctionID = " + aID + ";";
         Statement s2 = con.createStatement();
+
         ResultSet mbRet = s2.executeQuery(getMaxBid);
 
         mbRet.next();
@@ -75,9 +86,16 @@
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String currentTime = format.format(new Date());
 
-            String insertBid = "insert into bid (bidDateTime, bidAmount, buyerMaximum, auctionID, accountID) values ('" + currentTime + "', " + bidAmount +
-                    ", " + buyerMaximum + ", " + aID + ", " + accountID + ");";
+            String winnerCheck = "select accountID from bid where auctionID = " + aID + " order by bidNumber DESC LIMIT 1;";
+            System.out.println("Winner check : " + winnerCheck);
+            Statement s13 = con.createStatement();
+            ResultSet retWinner = s13.executeQuery(winnerCheck);
+            int winnerAID = -1;
+            while (retWinner.next()) {
+                winnerAID = Integer.parseInt(retWinner.getString(1));
+            }
 
+            String insertBid = "insert into bid (bidDateTime, bidAmount, buyerMaximum, auctionID, accountID) values ('" + currentTime + "', " + bidAmount + ", " + buyerMaximum + ", " + aID + ", " + accountID + ");";
 
             Statement s4 = con.createStatement();
             s4.executeUpdate(insertBid);
@@ -87,19 +105,19 @@
             s5.executeUpdate(updateCurrentPrice);
 
             // add alerts for others users
-            Statement s6 = con.createStatement();
-            String getAlertAccounts = "select distinct accountID from bid where auctionID = " + aID + " and accountID != " + accountID + ";";
-
-            ResultSet retAU = s6.executeQuery(getAlertAccounts);
-
-            while (retAU.next()) {
-                String curID = retAU.getString("accountID");
-                String notText = "The bid you have placed on this item has been out-bid.";
-
-                String alertPerson = "insert into notifications (accountID, auctionID, notificationText, notificationTime) values (" + curID + ", " + aID + ", '" + notText + "', '" + currentTime + "');";
-                Statement s7 = con.createStatement();
-                s7.executeUpdate(alertPerson);
-            }
+//            Statement s6 = con.createStatement();
+//            String getAlertAccounts = "select distinct accountID from bid where auctionID = " + aID + " and accountID != " + accountID + ";";
+//
+//            ResultSet retAU = s6.executeQuery(getAlertAccounts);
+//
+//            while (retAU.next()) {
+//                String curID = retAU.getString("accountID");
+//                String notText = "The bid you have placed on this item has been out-bid.";
+//
+//                String alertPerson = "insert into notifications (accountID, auctionID, notificationText, notificationTime) values (" + curID + ", " + aID + ", '" + notText + "', '" + currentTime + "');";
+//                Statement s7 = con.createStatement();
+//                s7.executeUpdate(alertPerson);
+//            }
 
             // Auto-Bidding
 
@@ -114,23 +132,27 @@
                 System.out.println("Only one bidder on auction (AI).");
             } else {
 
-                System.out.println("Many bidders on auction (AI).");
-
-                // get list of bidders on auction
-                Statement s8 = con.createStatement();
-                String getBidders = "select * from bid where auctionID = " + aID + ";";
-                ResultSet retBidders = s8.executeQuery(getBidders);
-
                 // get max bid placed
                 Statement s9 = con.createStatement();
-                String getMax = "select max(bidAmount) from bid where auctionID = " + aID + ";";
+                String getMax = "select max(buyerMaximum) from bid where auctionID = " + aID + ";";
                 ResultSet retMax = s9.executeQuery(getMax);
                 retMax.next();
-                float theMaxBid = Float.parseFloat(retMax.getString(1));
+                float maxBuyerMax = Float.parseFloat(retMax.getString(1));
+                System.out.println("Max BuyerMax: " + maxBuyerMax);
+
+                // get ID of the max bid
+                Statement s12 = con.createStatement();
+                String getMaxID = "select distinct accountID from bid where auctionID = " + aID + " and buyerMaximum = (select max(buyerMaximum) from bid where auctionID = " + aID + ") order by bidNumber DESC LIMIT 1;";
+                System.out.println("getMadID: " + getMaxID);
+                ResultSet retMaxID = s12.executeQuery(getMaxID);
+                retMaxID.next();
+                int maxBuyerMaxID = Integer.parseInt(retMaxID.getString(1));
+                System.out.println("id of max bid accoutn: " + maxBuyerMaxID);
+
 
                 // get second max bid
                 Statement s10 = con.createStatement();
-                String getSecMax = "select max(bidAmount) from bid b where auctionID = " + aID + " and bidAmount < (select max(bidAmount) from bid b2 where b2.auctionID = " + aID + ");";
+                String getSecMax = "select max(buyerMaximum) from bid b where auctionID = " + aID + " and buyerMaximum < (select max(buyerMaximum) from bid b2 where b2.auctionID = " + aID + ");";
                 System.out.println(getSecMax);
                 ResultSet retSecMax = s10.executeQuery(getSecMax);
                 float secMaxBid = 0;
@@ -139,11 +161,103 @@
                     secMaxBid = Float.parseFloat(retSecMax.getString(1));
                 }
 
+                System.out.println("Second Max buyerMax: " + secMaxBid);
 
-                while (retBidders.next()) {
 
+                // check if winner of bid is already placer of bid, then dont do anything
+//                String winnerCheck = "select distinct accountID from bid where auctionID = " + aID + " order by bidNumber DESC LIMIT 1;";
+//                System.out.println("Winner check : " + winnerCheck);
+//                Statement s13 = con.createStatement();
+//                ResultSet retWinner = s13.executeQuery(winnerCheck);
+//                retWinner.next();
+//                int winnerAID = Integer.parseInt(retWinner.getString(1));
+
+                System.out.println("winner ID: " + winnerAID);
+                System.out.println("account ID: " + accountID);
+
+
+                if (winnerAID != -1 && winnerAID == Integer.parseInt(accountID)) {
+                    System.out.println("Leader is the same as bid placer or.");
+                } else {
+
+                    // add bid from max user into the auction
+                    SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    String currentTime2 = formatDate.format(new Date());
+
+                    int maxCount = 0;
+                    String query = "select accountID from bid where auctionID = " + aID + " and buyerMaximum = (select max(buyerMaximum) from bid where auctionID = " + aID + ");";
+                    System.out.println("Check two max: " + query);
+                    Statement s50 = con.createStatement();
+                    ResultSet getQuery = s50.executeQuery(query);
+
+                    while (getQuery.next()) {
+                        System.out.print(getQuery.getString(1));
+                        maxCount++;
+                    }
+
+                    System.out.print("max Count = " + maxCount);
+
+                    float autoBidAmount = 0;
+                    if (maxCount == 1) {
+                        autoBidAmount = (bidInc + secMaxBid);
+                    } else {
+                        autoBidAmount = maxBuyerMax;
+                    }
+
+                    if ( !(Float.parseFloat(bidAmount) >= autoBidAmount) ) {
+                        String jumpBidQuery = "insert into bid (bidDateTime, bidAmount, buyerMaximum, auctionID, accountID) values ('" + currentTime2 + "', " + autoBidAmount + ", " + maxBuyerMax + ", " + aID + ", " + maxBuyerMaxID + ");";
+                        System.out.println("Adding max bid : " + jumpBidQuery);
+                        Statement s11 = con.createStatement();
+                        s11.executeUpdate(jumpBidQuery);
+                    }
+
+                    // get list of bidders on auction
+                    Statement s8 = con.createStatement();
+                    String getBidders = "select * from bid where auctionID = " + aID + ";";
+                    ResultSet retBidders = s8.executeQuery(getBidders);
+
+                    // no notifications for outbid
+
+                    // update current price
+                    String updateCP = "update auction set currentPrice = " + (secMaxBid + bidInc) + " where auctionID = " + aID + ";";
+                    Statement s14 = con.createStatement();
+                    s14.executeUpdate(updateCP);
+
+                    // notify leader of auction
+                    String currentTime4 = format.format(new Date());
+                    String notTextLeader = "You are now leading the auction via auto-bid.";
+                    String alertLeader = "insert into notifications (accountID, auctionID, notificationText, notificationTime) values (" + maxBuyerMaxID + ", " + aID + ", '" + notTextLeader + "', '" + currentTime4 + "');";
+//                    System.out.println("Send notifications: " + alertLeader);
+                    Statement s15 = con.createStatement();
+                    s15.executeUpdate(alertLeader);
+
+
+                    // notify other users that they have lost the auto-bidding
+                    String currentTime5 = format.format(new Date());
+                    String querySecID = "select distinct accountID from bid b where auctionID = " + aID + " and buyerMaximum < (select max(buyerMaximum) from bid b2 where b2.auctionID = " + aID + ") order by buyerMaximum DESC LIMIT 1;";
+                    Statement s17 = con.createStatement();
+                    ResultSet retSecID = s17.executeQuery(querySecID);
+                    retSecID.next();
+                    int secID = Integer.parseInt(retSecID.getString(1));
+                    String notTextSecond = "Your upper-limit was outbid by another user.";
+
+                    String alertSecond = "insert into notifications (accountID, auctionID, notificationText, notificationTime) values (" + secID + ", " + aID + ", '" + notTextSecond + "', '" + currentTime5 + "');";
+                    System.out.println("Second max alert: " + alertSecond);
+                    Statement s16 = con.createStatement();
+                    s16.executeUpdate(alertSecond);
+
+
+//                    while (retBidders.next()) {
+//                        String currentTime3 = format.format(new Date());
+//                        String curID = retBidders.getString("accountID");
+//                        String notText = "Your upper-limit was outbid by another user.";
+//
+//                        String alertPerson = "insert into notifications (accountID, auctionID, notificationText, notificationTime) values (" + curID + ", " + aID + ", '" + notText + "', '" + currentTime3 + "');";
+//                       // System.out.println("Send notifications: " + alertPerson);
+//                        Statement s16 = con.createStatement();
+//                        s16.executeUpdate(alertPerson);
+//                    }
                 }
-
             }
 
             response.sendRedirect("dashboard.jsp");

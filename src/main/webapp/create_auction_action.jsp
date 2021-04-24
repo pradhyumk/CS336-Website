@@ -1,6 +1,8 @@
 <%@ page import="java.sql.*"%>
 <%@ page import="java.util.Date" %>
 <%@ page import="java.util.logging.Logger" %>
+<%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="java.util.StringTokenizer" %>
 
 <%
     Logger logger = Logger.getLogger("create_auction_action.jsp");
@@ -54,7 +56,6 @@
         long currentTime = date.getTime() / 1000;
 
         float stPrice = Float.parseFloat(startPrice);
-//        float upLimit = Float.parseFloat(upperLimit);
         float mPrice = Float.parseFloat(minPrice);
 
         System.out.println("---------");
@@ -130,10 +131,46 @@
             ResultSet r = statement.executeQuery(getAuctionID);
             r.next();
             String curID = r.getString(1);
-            System.out.println("CurID: " + curID);
+
             String insertWinning = "insert into winningMember (auctionID, accountID, winningAccountID) values (" + curID + ", " + accountID + "," + -2 + ");";
-            System.out.println(insertWinning);
+
             statement.executeUpdate(insertWinning);
+
+            // check if the item you just created is someone's alert
+
+            Statement s3 = con.createStatement();
+            String checkAlert = "select accountID from alerts where '" + itemName + "' like concat('%', alerts.itemName, '%');";
+
+            ResultSet retCheck = s3.executeQuery(checkAlert);
+            boolean emptyResult = true;
+            Date passedin = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm").parse(startDate);
+
+            while (retCheck.next()) {
+
+                emptyResult = false;
+                int alertCurID = Integer.parseInt(retCheck.getString("accountID"));
+                String notText = "The item you requested for (" + itemName + ") has been listed in the action";
+                String alertPerson = "insert into notifications (accountID, auctionID, notificationText, notificationTime) values (" + alertCurID + ", " + curID + ", '" + notText + "', '" + passedin + "');";
+
+                Statement s6 = con.createStatement();
+                s6.executeUpdate(alertPerson);
+            }
+
+            if (emptyResult) { // is empty
+                Statement s4 = con.createStatement();
+                String checkAlert2 = "select accountID from alerts where alerts.itemName like '%" + itemName + "%' ;";
+                ResultSet retCheck2 = s4.executeQuery(checkAlert2);
+
+                while (retCheck2.next()) {
+                    int alertCurID = Integer.parseInt(retCheck2.getString("accountID"));
+                    String notText = "The item you requested for (" + itemName + ") has been listed in the action";
+
+                    String alertPerson = "insert into notifications (accountID, auctionID, notificationText, notificationTime) values (" + alertCurID + ", " + curID + ", '" + notText + "', '" + passedin + "');";
+
+                    Statement s5 = con.createStatement();
+                    s5.executeUpdate(alertPerson);
+                }
+            }
 
             response.sendRedirect("dashboard.jsp");
         }

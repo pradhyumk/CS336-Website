@@ -41,11 +41,11 @@
 
     <br><br>
 
-    <input type="text" id="itemName" name="itemName" placeholder="Item Name" class="inputForm"  required><br><br>
-    <input type="text" id="itemDescription" name="itemDescription" placeholder="Item Description" class="inputForm" required><br><br>
+    <input type="text" id="itemName" name="itemName" placeholder="Item Name" class="inputForm" pattern="[^()/><\][\\\x22',;|]+" required><br><br>
+    <input type="text" id="itemDescription" name="itemDescription" placeholder="Item Description" class="inputForm" pattern="[^()/><\][\\\x22',;|]+" required><br><br>
     <input type="number" id="itemSize" name="itemSize" placeholder="Size" min="1" step="0.5" class="inputForm" max="14" required><br><br>
-    <input type="text" id="brand" name="brand" placeholder="Brand" class="inputForm" required><br><br>
-    <input type="text" id="color" name="color" placeholder="Color" class="inputForm" required><br><br>
+    <input type="text" id="brand" name="brand" placeholder="Brand" class="inputForm" pattern="[^()/><\][\\\x22',;|]+" required><br><br>
+    <input type="text" id="color" name="color" placeholder="Color" class="inputForm" pattern="[^()/><\][\\\x22',;|]+" required><br><br>
     <input type="number" id="startPrice" name="startPrice" placeholder="Start Price" class="inputForm" min="1" step="0.01" required><br><br>
     <input type="number" id="minPrice" name="minPrice" placeholder="Reserve Price" class="inputForm" step="0.01" min="1" required><br><br>
     <h4>Start Date (format: mm/dd/yyyy, hh:mm a)</h4>

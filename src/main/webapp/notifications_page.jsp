@@ -46,7 +46,7 @@
         String accountID = ret.getString(1);
 
         String getNotifications = "select auctionID, itemName, notificationText, notificationTime from notifications, item where accountID = " + accountID + " and itemID = notifications.auctionID order by notificationTime DESC;";
-        System.out.println(getNotifications);
+//        System.out.println(getNotifications);
         ResultSet retGN = statement.executeQuery(getNotifications);
 
 %>

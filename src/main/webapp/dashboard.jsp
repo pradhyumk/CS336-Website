@@ -42,7 +42,7 @@
     <input type="submit" value="View Notifications" class="submitButton">
 </form>
 
-<form action="notifications_page.jsp" class="buttonForm">
+<form action="set_alerts.jsp" class="buttonForm">
     <input type="submit" value="Set Alerts" class="submitButton">
 </form>
 
@@ -60,7 +60,7 @@
             <option value="itemBrand">Item Brand</option>
             <option value="itemSize">Item Size</option>
     </select><br><br>
-    <input type="text" id="search" name="search" placeholder="Search" class="inputForm" required>
+    <input type="text" id="search" name="search" placeholder="Search" pattern="[^()/><\][\\\x22',;|]+" class="inputForm" required>
 </form>
 
 <br><br><br><br><br>
@@ -244,6 +244,7 @@
 
                         String IDcreate = retCRID.getString(1);
                         String createNotText = "The auction has closed and your item has sold.";
+                        System.out.println("246 insert notifcation");
                         Statement s10 = con.createStatement();
                         String createAlertPerson = "insert into notifications (accountID, auctionID, notificationText, notificationTime) values (" + IDcreate + ", " + aucID + ", '" + createNotText + "', '" + ret.getTimestamp("closingDateTime") + "');";
                         s10.executeUpdate(createAlertPerson);
@@ -275,8 +276,6 @@
 
                 } else { // reserve price has not been hit
 
-                  //  System.out.println("entre else");
-
                     // we can add -1 to winning member
                     Statement s14 = con.createStatement();
                     String addWinner = "update winningMember set winningAccountID = " + -1 + " where auctionID = " + aucID + ";"; // -1 means there was no winner
@@ -292,6 +291,7 @@
                     String createNotText = "The auction has closed and your item has not been sold.";
                     Statement s16 = con.createStatement();
                     String createAlertPerson = "insert into notifications (accountID, auctionID, notificationText, notificationTime) values (" + IDcreate + ", " + aucID + ", '" + createNotText + "', '" + ret.getTimestamp("closingDateTime") + "');";
+                    System.out.println("293 insert notifcation");
                     s16.executeUpdate(createAlertPerson);
                 }
 

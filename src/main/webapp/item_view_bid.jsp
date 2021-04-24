@@ -4,6 +4,14 @@
 
 <!DOCTYPE html>
 
+<script type="text/javascript">
+    function enableBuyerMaxField() {
+        cb = document.getElementById("autoBidOption").checked;
+        document.getElementById("buyerMaximum").disabled = !cb;
+        document.getElementById("buyerMaximum").required = !cb;
+    }
+</script>
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -97,7 +105,7 @@
         </td>
         <td><%=res.getString("closingDateTime")%>
         </td>
-        <td><%=String.format("%.2f", res.getFloat("bidIncrement"))%>
+        <td><%="$" + String.format("%.2f", res.getFloat("bidIncrement"))%>
         </td>
     </tr>
 
@@ -133,15 +141,18 @@
 
 <br><br><br>
 
-<form class="auctionForm" action="insert_bid.jsp" method="post">
+<form id="myForm" class="auctionForm" action="insert_bid.jsp" method="post">
     <input type="number" id="auctionID" name="auctionID" min="<%=aucID%>" max="<%=aucID%>" placeholder="Auction ID"
-           class="inputForm" value="<%=aucID%>" step="1" required><br><br>
+           class="inputForm" value="<%=aucID%>" step="1" readonly="readonly" required><br><br>
     <input type="number" id="bidamount" name="bidAmount" min="<%=currPrice + bidIncrement%>"
            placeholder="Bid Amount (Min: $<%=String.format("%.2f", currPrice + bidIncrement)%>)" class="inputForm"
-           step="<%=bidIncrement%>" required><br><br>
+           step="<%=bidIncrement%>" required><br><br><br>
+
+    <label><input type="checkbox" name="autoBidOption" id="autoBidOption" onclick="enableBuyerMaxField();" >Enable Auto-Bidding</label><br><br>
+
     <input type="number" id="buyerMaximum" name="buyerMaximum" min="<%=currPrice + bidIncrement%>"
            placeholder="Maximum Bid (Min: $<%=String.format("%.2f", currPrice + bidIncrement)%>)" class="inputForm"
-           step="<%=bidIncrement%>" required><br><br>
+           step="<%=bidIncrement%>" disabled><br><br>
     <input type="submit" value="Place Bid" class="submitButton">
 </form>
 
@@ -202,7 +213,7 @@
     <tr>
         <td><%=retBid.getString("username")%>
         </td>
-        <td><%=String.format("%.2f", retBid.getFloat("bidAmount"))%>
+        <td><%="$" + String.format("%.2f", retBid.getFloat("bidAmount"))%>
         </td>
         <td><%=retBid.getString("bidDateTime") %>
         </td>
@@ -220,7 +231,7 @@
 
     if (subCatName.compareTo("Sneakers") == 0) {
         getSimilar = "select auctionID, itemName, if(item.subCategoryID = 1, 'Sneakers', if (item.subCategoryID = 2, \"Sandals\", if(item.subCategoryID = 3, \"Slippers\", \"None\"))) as subCategoryName, itemDescription, itemSize, itemBrand, itemColor, currentPrice, startDate, closingDateTime from auction, item where item.subCategoryID = 1 and auctionID = itemID and auctionID != " + aucID + ";";
-        System.out.println("getSimilar: " + getSimilar);
+//        System.out.println("getSimilar: " + getSimilar);
     } else if (subCatName.compareTo("Sandals") == 0) {
         getSimilar = "select auctionID, itemName, if(item.subCategoryID = 1, \"Sneakers\", if (item.subCategoryID = 2, \"Sandals\", if(item.subCategoryID = 3, \"Slippers\", \"None\"))) as subCategoryName, itemDescription, itemSize, itemBrand, itemColor, currentPrice, startDate, closingDateTime from auction, item where item.subCategoryID = 2 and auctionID = itemID and auctionID != " + aucID + ";";
     } else if (subCatName.compareTo("Slippers") == 0) {
