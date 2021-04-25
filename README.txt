@@ -26,7 +26,7 @@ How to Run:
 
  Notes:
  a. The database functionality will not work because MySQL is running on a home PC with a dynamic IP address.
- b. The video featuring the website has the URL "https://m1cro.ddns.net". To assist groupmates in accessing the website, the local web server was forwarded to this address.
+ b. The video featuring the website has the URL "http://m1cro.ddns.net". To assist groupmates in accessing the website, the local web server was forwarded to this address.
 
  For any queries, contact Pradhyum.Krishnan@rutgers.edu
 
