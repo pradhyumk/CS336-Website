@@ -2,6 +2,14 @@
 <html lang="en">
 
 <script type="text/javascript">
+    function enableReservePriceOption() {
+        cb = document.getElementById("reservePriceOption").checked;
+        document.getElementById("minPrice").disabled = !cb;
+        document.getElementById("minPrice").required = cb;
+    }
+</script>
+
+<script type="text/javascript">
     displayDivDemo = (id, elementValue) => {
         document.getElementById(id).style.display = elementValue.value === 1 ? 'block' : 'none';
     }
@@ -47,7 +55,8 @@
     <input type="text" id="brand" name="brand" placeholder="Brand" class="inputForm" pattern="[^()/><\][\\\x22',;|]+" required><br><br>
     <input type="text" id="color" name="color" placeholder="Color" class="inputForm" pattern="[^()/><\][\\\x22',;|]+" required><br><br>
     <input type="number" id="startPrice" name="startPrice" placeholder="Start Price" class="inputForm" min="1" step="0.01" required><br><br>
-    <input type="number" id="minPrice" name="minPrice" placeholder="Reserve Price" class="inputForm" step="0.01" min="1" required><br><br>
+    <label><input type="checkbox" name="reservePriceOption" id="reservePriceOption" onclick="enableReservePriceOption();" >Enable Reserve Price?</label><br><br>
+    <input type="number" id="minPrice" name="minPrice" placeholder="Reserve Price" class="inputForm" step="0.01" min="1"  required disabled><br><br>
     <h4>Start Date (format: mm/dd/yyyy, hh:mm a)</h4>
     <input type="datetime-local" id="startDate" name="startDate" placeholder="Start Date" class="inputForm" min='$todaymin' required><br><br>
     <h4>Closing Date (format: mm/dd/yyyy, hh:mm a)</h4>

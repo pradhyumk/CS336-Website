@@ -104,7 +104,6 @@
 
         String usern = (String) session.getAttribute("user");
         String queryAccountID = "select accountID from buyeraccount where username = '" + usern + "';";
-        //System.out.println(queryAccountID);
 
         ResultSet retID = statement.executeQuery(queryAccountID);
         retID.next();
@@ -191,7 +190,6 @@
 
             if (val == -2) { // if not declared a winning member
 
-               // System.out.println("enter next()");
 
                 // get reserve and current price
                 Statement s4 = con.createStatement();
@@ -208,8 +206,6 @@
                 retCP.next();
                 float price = Float.parseFloat(retCP.getString(1));
 
-              //  System.out.println("Reserve Price: " + reserve);
-              //  System.out.println("Final Price: " + price);
 
                 if (reserve <= price) {
 
@@ -244,7 +240,6 @@
 
                         String IDcreate = retCRID.getString(1);
                         String createNotText = "The auction has closed and your item has sold.";
-                        System.out.println("246 insert notifcation");
                         Statement s10 = con.createStatement();
                         String createAlertPerson = "insert into notifications (accountID, auctionID, notificationText, notificationTime) values (" + IDcreate + ", " + aucID + ", '" + createNotText + "', '" + ret.getTimestamp("closingDateTime") + "');";
                         s10.executeUpdate(createAlertPerson);
@@ -291,15 +286,12 @@
                     String createNotText = "The auction has closed and your item has not been sold.";
                     Statement s16 = con.createStatement();
                     String createAlertPerson = "insert into notifications (accountID, auctionID, notificationText, notificationTime) values (" + IDcreate + ", " + aucID + ", '" + createNotText + "', '" + ret.getTimestamp("closingDateTime") + "');";
-                    System.out.println("293 insert notifcation");
                     s16.executeUpdate(createAlertPerson);
                 }
 
             } else {
-                //System.out.println("there was no winner");
             }
         } else {
-           // System.out.println("Auction is open");
         }
 
 

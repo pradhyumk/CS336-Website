@@ -12,13 +12,20 @@
     String brand = request.getParameter("brand");
     String color = request.getParameter("color");
     String startPrice = request.getParameter("startPrice");
-    String minPrice = request.getParameter("minPrice");
     String startDate = request.getParameter("startDate");
     String closingDate = request.getParameter("closingDate");
     String bidIncrement = request.getParameter("bidIncrement");
     String subCategory = request.getParameter("subcategory");
+    boolean reservePriceOption = request.getParameter("reservePriceOption") != null;
 
     try{
+
+        String minPrice = "";
+        if (reservePriceOption) {
+            minPrice = request.getParameter("minPrice");
+        } else {
+            minPrice = request.getParameter("startPrice");
+        }
 
         int subCategoryID = 1;
 
@@ -57,9 +64,6 @@
 
         float stPrice = Float.parseFloat(startPrice);
         float mPrice = Float.parseFloat(minPrice);
-
-        System.out.println("---------");
-        System.out.println("startTime: " + startTime + "\nclosingTime: " + closingTime + "\ncurrentTime: " + currentTime);
 
         if (startTime < currentTime) {
 

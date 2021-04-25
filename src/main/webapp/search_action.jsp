@@ -35,7 +35,6 @@
 <%
     String search = request.getParameter("search");
     String searchType = request.getParameter("category");
-    System.out.println(search + " " + searchType);
 
     if (searchType == null) { %>
         <script type="text/javascript">
@@ -59,8 +58,6 @@
 
         String accountID = ret.getString(1);
 
-        System.out.println("search: " + search);
-        System.out.println("searchType: " + searchType);
 
 
 
@@ -79,7 +76,6 @@
             getResults = "select itemID, itemName, if (item.subCategoryID = 2, \"Sandals\", if(item.subCategoryID = 3, \"Slippers\", \"None\")) as subCategoryName, itemDescription, itemBrand, itemSize, itemColor from item where itemSize like '%" + search + "%';";
         }
 
-        System.out.println("getResult " + getResults);
         Statement s2 = con.createStatement();
         ResultSet retGet = s2.executeQuery(getResults);
 

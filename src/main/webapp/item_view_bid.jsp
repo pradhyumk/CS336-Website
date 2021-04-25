@@ -177,7 +177,6 @@
     }
 
     if (empty) {
-        System.out.println("Empty set");
 %>
 <h3>The auction has closed and there is no declared winner.</h3>
 
@@ -231,7 +230,6 @@
 
     if (subCatName.compareTo("Sneakers") == 0) {
         getSimilar = "select auctionID, itemName, if(item.subCategoryID = 1, 'Sneakers', if (item.subCategoryID = 2, \"Sandals\", if(item.subCategoryID = 3, \"Slippers\", \"None\"))) as subCategoryName, itemDescription, itemSize, itemBrand, itemColor, currentPrice, startDate, closingDateTime from auction, item where item.subCategoryID = 1 and auctionID = itemID and auctionID != " + aucID + ";";
-//        System.out.println("getSimilar: " + getSimilar);
     } else if (subCatName.compareTo("Sandals") == 0) {
         getSimilar = "select auctionID, itemName, if(item.subCategoryID = 1, \"Sneakers\", if (item.subCategoryID = 2, \"Sandals\", if(item.subCategoryID = 3, \"Slippers\", \"None\"))) as subCategoryName, itemDescription, itemSize, itemBrand, itemColor, currentPrice, startDate, closingDateTime from auction, item where item.subCategoryID = 2 and auctionID = itemID and auctionID != " + aucID + ";";
     } else if (subCatName.compareTo("Slippers") == 0) {
